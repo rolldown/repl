@@ -1,8 +1,7 @@
+import * as monaco from 'monaco-editor'
 import type { BuiltInParserName, Plugin } from 'prettier'
 
 export default defineNuxtPlugin(() => {
-  const monaco = useMonaco()!
-
   monaco.languages.registerDocumentFormattingEditProvider(
     (
       [
