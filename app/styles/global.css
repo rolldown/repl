@@ -1,0 +1,36 @@
+html.dark {
+  color-scheme: dark;
+  background-color: var(--c-bg-base);
+}
+
+select,
+input {
+  --at-apply: 'border rounded p1 accent-current';
+}
+
+select {
+  --at-apply: 'bg-#0000000d dark:bg-#ffffff1a';
+}
+
+option {
+  --at-apply: 'dark:bg-base';
+}
+
+/* Color Mode transition */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 1;
+}
+::view-transition-new(root) {
+  z-index: 2147483646;
+}
+.dark::view-transition-old(root) {
+  z-index: 2147483646;
+}
+.dark::view-transition-new(root) {
+  z-index: 1;
+}
