@@ -1,4 +1,5 @@
 import * as monaco from 'monaco-editor'
+import { extname } from 'pathe'
 import type { Raw } from 'vue'
 
 export function useSourceFile(
@@ -53,10 +54,32 @@ export interface SourceFile {
 
 export type SourceFileMap = Map<string, SourceFile>
 
+export type MonacoLanguage =
+  | 'javascript'
+  | 'typescript'
+  | 'json'
+  | 'html'
+  | 'vue'
+  | 'css'
+  | 'yaml'
+  | 'plaintext'
+
+export const ExtMap: Record<string, MonacoLanguage> = {
+  '.ts': 'typescript',
+  '.js': 'javascript',
+  '.json': 'json',
+  '.vue': 'vue',
+  '.css': 'css',
+  '.html': 'html',
+  '.txt': 'plaintext',
+  '.yaml': 'yaml',
+  '.yml': 'yaml',
+}
+
 function createModel(filename: string, code: string) {
   const uri = markRaw(monaco.Uri.file(filename))
-  const language = filename.endsWith('.json') ? 'json' : 'typescript'
-
+  const ext = extname(filename)
+  const language = ExtMap[ext] || 'plaintext'
   const existing = monaco.editor.getModel(uri)
   if (existing) {
     if (existing.getLanguageId() === language) {

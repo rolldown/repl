@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import * as monaco from 'monaco-editor'
+import type { MonacoLanguage } from '~/composables/source-file'
 
 const modelValue = defineModel<string>({ default: '' })
 const props = withDefaults(
   defineProps<{
-    language?: string
+    language?: MonacoLanguage
     options?: monaco.editor.IStandaloneEditorConstructionOptions
     model?: monaco.editor.ITextModel
     readonly?: boolean
