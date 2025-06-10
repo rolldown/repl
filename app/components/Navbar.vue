@@ -28,10 +28,10 @@ function resetState() {
 </script>
 
 <template>
-  <div flex="~ wrap" items-center justify-between p2>
-    <div flex="~ gap1" items-center>
-      <img src="/lightning-down.svg" h5 />
-      <h1 text-lg font-bold>Rolldown REPL</h1>
+  <div flex="~ wrap" items-center justify-between p3>
+    <div flex="~ gap2" items-center>
+      <img src="/lightning-down.svg" h7 />
+      <h1 text-xl>Rolldown REPL</h1>
     </div>
 
     <div flex="~ center" gap1>
