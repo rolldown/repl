@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { toggleDark } from '#imports'
+import * as monaco from 'monaco-editor'
 import {
   activeFile,
   DEFAULT_ENTRY,
@@ -7,8 +8,6 @@ import {
   files,
   timeCost,
 } from '~/state/bundler'
-
-const monaco = useMonaco()
 
 function resetState() {
   if (
