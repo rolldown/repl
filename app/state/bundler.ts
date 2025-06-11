@@ -15,4 +15,4 @@ export const files = ref<SourceFileMap>(defaultFiles())
 export const activeFile = ref<string>()
 export const timeCost = ref<number>()
 
-export const currentVersion = ref<string>('latest')
+export const currentVersion = ref<string>('nightly')
