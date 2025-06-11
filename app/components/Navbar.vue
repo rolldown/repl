@@ -3,6 +3,7 @@ import { toggleDark } from '#imports'
 import * as monaco from 'monaco-editor'
 import {
   activeFile,
+  currentVersion,
   DEFAULT_ENTRY,
   defaultFiles,
   files,
@@ -24,13 +25,30 @@ function resetState() {
     activeFile.value = DEFAULT_ENTRY
   }
 }
+
+const { data: versions } = useAsyncData(
+  'rolldown-versions',
+  getRolldownVersions,
+)
 </script>
 
 <template>
   <div flex="~ wrap" items-center justify-between p3>
     <div flex="~ gap2" items-center>
       <img src="/lightning-down.svg" h7 />
-      <h1 text-xl>Rolldown REPL</h1>
+      <h1 mr4 text-xl>Rolldown REPL</h1>
+      <select v-model="currentVersion" p="0.5">
+        <option value="latest">Latest</option>
+        <option value="nightly">Nightly</option>
+        <option value="canary">Canary</option>
+        <option
+          v-for="version of versions?.slice(0, 40)"
+          :key="version"
+          :value="version"
+        >
+          {{ version }}
+        </option>
+      </select>
     </div>
 
     <div flex="~ center" gap1>

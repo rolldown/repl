@@ -1,25 +1,17 @@
 <script setup lang="ts">
 import ansis from 'ansis'
-import { rolldown } from '~/composables/bundler'
-import { files, timeCost } from '~/state/bundler'
+import { build } from '~/composables/bundler'
+import { CONFIG_FILE, currentVersion, files, timeCost } from '~/state/bundler'
 
 const { data, status, error, refresh } = useAsyncData(
-  '',
+  'output',
   async (): Promise<TransformResult> => {
-    const bundler = rolldown
-    let context: any
-    if (!bundler.initted && bundler.init) {
-      context = await bundler.init()
-      bundler.initted = true
-    }
-
     const entries = Array.from(files.value.entries())
       .filter(([, file]) => file.isEntry)
       .map(([name]) => `/${name}`)
 
     let configObject: any = {}
-    const configCode =
-      bundler.configFile && files.value.get(bundler.configFile)?.code
+    const configCode = files.value.get(CONFIG_FILE)?.code
     let configUrl: string | undefined
     if (configCode) {
       configUrl = URL.createObjectURL(
@@ -32,7 +24,7 @@ const { data, status, error, refresh } = useAsyncData(
         configObject = configObject({
           files: files.value,
           entries,
-          api: bundler.api,
+          // api: bundler.api,
         })
       }
     }
@@ -40,12 +32,7 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      const result = await bundler.build.call(
-        context,
-        files.value,
-        entries,
-        configObject,
-      )
+      const result = await build(files.value, entries, configObject)
       return result
     } finally {
       timeCost.value = Math.round(performance.now() - startTime)
@@ -54,7 +41,7 @@ const { data, status, error, refresh } = useAsyncData(
   { server: false, deep: false },
 )
 
-watch(files, () => refresh(), {
+watch([files, currentVersion], () => refresh(), {
   deep: true,
 })
 

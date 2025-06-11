@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      '@rolldown/browser':
-        specifier: 1.0.0-beta.13
-        version: 1.0.0-beta.13
       '@shikijs/monaco':
         specifier: ^3.6.0
         version: 3.6.0
@@ -45,6 +42,9 @@ importers:
       '@iconify-json/vscode-icons':
         specifier: ^1.2.22
         version: 1.2.22
+      '@rolldown/browser':
+        specifier: 1.0.0-beta.13
+        version: 1.0.0-beta.13
       '@sxzz/eslint-config':
         specifier: ^7.0.2
         version: 7.0.2(@types/eslint@9.6.1)(@typescript-eslint/eslint-plugin@8.34.0(@typescript-eslint/parser@8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(@typescript-eslint/utils@8.34.0(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(@unocss/eslint-plugin@66.1.4(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3))(eslint@9.28.0(jiti@2.4.2))(typescript@5.8.3)
