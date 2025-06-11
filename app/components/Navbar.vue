@@ -57,7 +57,7 @@ function resetState() {
         <div i-ri:sun-line dark:i-ri:moon-line />
       </button>
       <a
-        href="https://github.com/rolldown/rolldown-repl"
+        href="https://github.com/rolldown/repl"
         target="_blank"
         title="GitHub"
         nav-button
