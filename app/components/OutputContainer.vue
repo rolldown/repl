@@ -21,10 +21,14 @@ const { data, status, error, refresh } = useAsyncData(
       URL.revokeObjectURL(configUrl)
       configObject = mod.default || mod
       if (typeof configObject === 'function') {
+        const api: typeof import('@rolldown/browser/experimental') =
+          await importUrl(
+            `/api/proxy/@${currentVersion.value}/dist/experimental-index.browser.mjs`,
+          )
         configObject = configObject({
           files: files.value,
           entries,
-          // api: bundler.api,
+          api,
         })
       }
     }
