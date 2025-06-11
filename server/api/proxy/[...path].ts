@@ -2,7 +2,12 @@ export default cachedEventHandler(
   async (evt) => {
     const path = getRouterParam(evt, 'path')
     const url = `http://cdn.jsdelivr.net/npm/@rolldown/browser${path}`
-    const response = await fetch(url)
+    const response = await fetch(url, {
+      headers: {
+        'User-Agent': 'Rolldown Browser Proxy',
+        Accept: 'application/javascript, application/json, text/plain, */*',
+      },
+    })
     const contentType = response.headers.get('content-type')
     const isJS = contentType?.includes('javascript')
 
