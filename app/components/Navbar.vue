@@ -39,7 +39,6 @@ const { data: versions } = useAsyncData(
       <h1 mr4 text-xl>Rolldown REPL</h1>
       <select v-model="currentVersion" p="0.5" text-sm>
         <option value="latest">Latest</option>
-        <option value="nightly">Nightly</option>
         <option value="canary">Canary</option>
         <option
           v-for="version of versions?.slice(0, 40)"
