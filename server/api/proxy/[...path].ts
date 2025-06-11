@@ -47,6 +47,16 @@ export default cachedEventHandler(
   },
   {
     maxAge: 60 * 60 * 24,
-    shouldBypassCache: () => import.meta.dev,
+    shouldBypassCache(evt) {
+      const path = getRouterParam(evt, 'path')
+      if (
+        path?.startsWith('@latest') ||
+        path?.startsWith('@canary') ||
+        path?.startsWith('@nightly')
+      ) {
+        return true
+      }
+      return import.meta.dev
+    },
   },
 )
