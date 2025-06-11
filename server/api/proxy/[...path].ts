@@ -1,7 +1,7 @@
 export default cachedEventHandler(
   async (evt) => {
     const path = getRouterParam(evt, 'path')
-    const url = `http://cdn.jsdelivr.net/npm/@rolldown/browser${path}`
+    const url = `https://cdn.jsdelivr.net/npm/@rolldown/browser${path}`
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Rolldown Browser Proxy',
@@ -25,7 +25,7 @@ export default cachedEventHandler(
         )
         .replaceAll(
           `import __wasmUrl from './rolldown-binding.wasm32-wasi.wasm?url'`,
-          `const __wasmUrl = new URL('./rolldown-binding.wasm32-wasi.wasm', import.meta. url).href`,
+          `const __wasmUrl = ${JSON.stringify(new URL('./rolldown-binding.wasm32-wasi.wasm', url).href)}`,
         )
         .replaceAll(
           `from "pathe"`,
