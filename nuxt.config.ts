@@ -12,9 +12,6 @@ export default defineNuxtConfig({
     build: {
       target: 'esnext',
     },
-    optimizeDeps: {
-      exclude: ['@rolldown/browser'],
-    },
     server: {
       headers: crossOriginHeaders,
     },
