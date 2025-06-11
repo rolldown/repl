@@ -24,3 +24,6 @@ logs
 !.env.example
 
 .eslintcache
+
+# Local Netlify folder
+.netlify
