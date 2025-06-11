@@ -8,11 +8,28 @@ export default cachedEventHandler(
         Accept: 'application/javascript, application/json, text/plain, */*',
       },
     })
+
+    if (response.status !== 200) {
+      return new Response(`Failed to fetch ${url}: ${response.statusText}`, {
+        status: response.status,
+      })
+    }
+
     const contentType = response.headers.get('content-type')
-    const isJS = contentType?.includes('javascript')
+
+    const allowMine =
+      contentType?.includes('application/javascript') ||
+      contentType?.includes('text/javascript') ||
+      contentType?.includes('application/node') ||
+      contentType?.includes('application/json')
+    if (!allowMine) {
+      return new Response(`Unsupported content type: ${contentType}`, {
+        status: 400,
+      })
+    }
 
     let body: ReadableStream<Uint8Array> | null | string = response.body
-    if (isJS) {
+    if (allowMine) {
       body = await response.text()
       body = body
         .replaceAll(
