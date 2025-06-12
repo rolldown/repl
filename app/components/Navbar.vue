@@ -34,11 +34,14 @@ const { data: versions } = useAsyncData(
 </script>
 
 <template>
-  <div flex="~ wrap" items-center justify-between p3>
+  <div flex="~ wrap" items-center justify-between px2 py2>
     <div flex="~ gap2" items-center>
       <img src="/lightning-down.svg" h7 />
       <h1 mr4 text-xl>Rolldown REPL</h1>
-      <select v-model="currentVersion" p="0.5" text-sm>
+    </div>
+
+    <div flex="~ center" gap1>
+      <select v-model="currentVersion" border rounded p1 text-sm>
         <option value="latest">Latest</option>
         <option value="canary">Canary</option>
         <option
@@ -49,22 +52,18 @@ const { data: versions } = useAsyncData(
           {{ version }}
         </option>
       </select>
-    </div>
 
-    <div flex="~ center" gap1>
-      <div flex="~ center" gap2>
-        <div
-          v-if="timeCost != null"
-          flex
-          items-center
-          gap1
-          text-sm
-          font-mono
-          title="Time Cost"
-        >
-          <div i-ri:time-line op60 />
-          <span op80>{{ timeCost }}ms</span>
-        </div>
+      <div
+        v-if="timeCost != null"
+        flex
+        items-center
+        gap1
+        text-sm
+        font-mono
+        title="Time Cost"
+      >
+        <div i-ri:time-line op60 />
+        <span op80>{{ timeCost }}ms</span>
       </div>
 
       <button title="Reset State" nav-button @click="resetState">
