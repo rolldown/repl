@@ -7,7 +7,16 @@ export default defineNuxtConfig({
   future: {
     compatibilityVersion: 4,
   },
-  modules: ['@unocss/nuxt', '@vueuse/nuxt', 'nuxt-monaco-editor'],
+  modules: [
+    '@unocss/nuxt',
+    '@vueuse/nuxt',
+    'nuxt-monaco-editor',
+    '@nuxtjs/plausible',
+  ],
+  plausible: {
+    domain: 'repl.rolldown.rs',
+    apiHost: 'https://evt.sxzz.dev',
+  },
   vite: {
     build: {
       target: 'esnext',

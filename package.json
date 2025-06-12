@@ -28,6 +28,7 @@
   "devDependencies": {
     "@iconify-json/ri": "^1.2.5",
     "@iconify-json/vscode-icons": "^1.2.22",
+    "@nuxtjs/plausible": "^1.2.0",
     "@rolldown/browser": "1.0.0-beta.13",
     "@sxzz/eslint-config": "^7.0.2",
     "@sxzz/prettier-config": "^2.2.1",
