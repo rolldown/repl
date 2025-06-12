@@ -21,6 +21,7 @@ function resetState() {
       if (model.uri.authority === 'model') return
       model.dispose()
     })
+    currentVersion.value = 'latest'
     files.value = defaultFiles()
     activeFile.value = DEFAULT_ENTRY
   }
