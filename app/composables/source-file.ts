@@ -66,7 +66,15 @@ export type MonacoLanguage =
 
 export const ExtMap: Record<string, MonacoLanguage> = {
   '.ts': 'typescript',
+  '.cts': 'typescript',
+  '.mts': 'typescript',
+  '.tsx': 'typescript',
+
   '.js': 'javascript',
+  '.cjs': 'javascript',
+  '.mjs': 'javascript',
+  '.jsx': 'javascript',
+
   '.json': 'json',
   '.vue': 'vue',
   '.css': 'css',
