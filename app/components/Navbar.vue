@@ -34,7 +34,7 @@ const { data: versions } = useAsyncData(
 </script>
 
 <template>
-  <div flex="~ wrap" items-center justify-between px2 py2>
+  <div flex="~ wrap" items-center justify-between gap2 px2 py2>
     <div flex="~ gap2" items-center>
       <img src="/lightning-down.svg" h7 />
       <h1 mr4 text-xl>Rolldown REPL</h1>
