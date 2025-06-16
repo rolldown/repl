@@ -1,5 +1,10 @@
 <script lang="ts" setup>
 import * as monaco from 'monaco-editor'
+import {
+  AutoTypings,
+  JsDelivrSourceResolver,
+  LocalStorageCache,
+} from 'monaco-editor-auto-typings'
 import type { MonacoLanguage } from '~/composables/source-file'
 
 const modelValue = defineModel<string>({ default: '' })
@@ -62,6 +67,21 @@ watch(editorElement, (newValue, oldValue) => {
     modelValue.value = editor.getValue()
   })
   isLoading.value = false
+  if (!props.readonly) {
+    const resolver = new JsDelivrSourceResolver()
+    const original = resolver.resolveSourceFile
+    resolver.resolveSourceFile = function (packageName, version, filePath) {
+      filePath = filePath
+        .replaceAll('.d.cts.d.ts', '.d.cts')
+        .replaceAll('.cjs.d.ts', '.d.cts')
+      return original.call(this, packageName, version, filePath)
+    }
+    AutoTypings.create(editor, {
+      sourceCache: new LocalStorageCache(),
+      fileRootPath: props.model ? monaco.Uri.file('/').path : undefined,
+      sourceResolver: resolver,
+    })
+  }
 })
 
 defineExpose({

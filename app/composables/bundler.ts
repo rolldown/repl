@@ -8,14 +8,11 @@ export interface TransformResult {
 }
 
 export async function build(
+  core: typeof import('@rolldown/browser'),
   files: SourceFileMap,
   input: string[],
   config: any,
 ): Promise<TransformResult> {
-  const mod: typeof import('@rolldown/browser') = await importUrl(
-    `/api/proxy/@${currentVersion.value}/dist/index.browser.mjs`,
-  )
-
   const warnings: string[] = []
   const inputOptions: InputOptions = {
     input,
@@ -53,7 +50,7 @@ export async function build(
   }
   console.info('Rolldown input options', inputOptions)
   console.info('Rolldown output options', outputOptions)
-  const bundle = await mod.rolldown(inputOptions)
+  const bundle = await core.rolldown(inputOptions)
   const result = await bundle.generate(outputOptions)
   const output = Object.fromEntries(
     result.output.map((chunk) =>

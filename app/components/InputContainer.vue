@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { activeFile, CONFIG_FILE, files } from '~/state/bundler'
+import { activeFile, CONFIG_FILES, files } from '~/state/bundler'
 
 const tabs = computed(() => Array.from(files.value.keys()))
 
@@ -63,7 +63,7 @@ function setEntry(name: string) {
 
       <template #tab-prefix="{ value }">
         <button
-          v-if="value !== CONFIG_FILE"
+          v-if="!CONFIG_FILES.includes(value)"
           title="Toggle Entry"
           p="0.5"
           mr="0.5"

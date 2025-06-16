@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ansis from 'ansis'
 import { build } from '~/composables/bundler'
-import { CONFIG_FILE, currentVersion, files, timeCost } from '~/state/bundler'
+import { CONFIG_FILES, currentVersion, files, timeCost } from '~/state/bundler'
 
 const { data, status, error, refresh } = useAsyncData(
   'output',
@@ -10,10 +10,29 @@ const { data, status, error, refresh } = useAsyncData(
       .filter(([, file]) => file.isEntry)
       .map(([name]) => `/${name}`)
 
+    const core: typeof import('@rolldown/browser') = await importUrl(
+      `/api/proxy/@${currentVersion.value}/dist/index.browser.mjs`,
+    )
+    const experimental: typeof import('@rolldown/browser/experimental') =
+      await importUrl(
+        `/api/proxy/@${currentVersion.value}/dist/experimental-index.browser.mjs`,
+      )
+
     let configObject: any = {}
-    const configCode = files.value.get(CONFIG_FILE)?.code
+    const tsConfig = files.value.get(CONFIG_FILES[0]!)
+    const jsConfig = files.value.get(CONFIG_FILES[1]!)
     let configUrl: string | undefined
-    if (configCode) {
+    if (tsConfig || jsConfig) {
+      let configCode = ''
+      if (tsConfig) {
+        configCode = experimental.transform(
+          tsConfig.filename,
+          tsConfig.code,
+        ).code
+      } else if (jsConfig) {
+        configCode = jsConfig.code
+      }
+
       configUrl = URL.createObjectURL(
         new Blob([configCode || ''], { type: 'text/javascript' }),
       )
@@ -21,14 +40,10 @@ const { data, status, error, refresh } = useAsyncData(
       URL.revokeObjectURL(configUrl)
       configObject = mod.default || mod
       if (typeof configObject === 'function') {
-        const api: typeof import('@rolldown/browser/experimental') =
-          await importUrl(
-            `/api/proxy/@${currentVersion.value}/dist/experimental-index.browser.mjs`,
-          )
         configObject = configObject({
           files: files.value,
           entries,
-          api,
+          api: experimental,
         })
       }
     }
@@ -36,7 +51,7 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      const result = await build(files.value, entries, configObject)
+      const result = await build(core, files.value, entries, configObject)
       return result
     } finally {
       timeCost.value = Math.round(performance.now() - startTime)

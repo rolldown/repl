@@ -1,13 +1,16 @@
 export const codeTemplate = 'export const foo = 42'
-export const configTemplate = `export default {\n\n}`
+export const configTemplate = `import type { RolldownOptions } from 'rolldown'
+const config: RolldownOptions = {\n\n}
+
+export default config`
 
 export const DEFAULT_ENTRY = 'index.ts'
-export const CONFIG_FILE = 'rolldown.config.js'
+export const CONFIG_FILES = ['rolldown.config.ts', 'rolldown.config.js']
 
 export const defaultFiles = () => {
   return new Map([
     [DEFAULT_ENTRY, useSourceFile(DEFAULT_ENTRY, codeTemplate, true)],
-    [CONFIG_FILE, useSourceFile(CONFIG_FILE, configTemplate)],
+    [CONFIG_FILES[0]!, useSourceFile(CONFIG_FILES[0]!, configTemplate)],
   ])
 }
 

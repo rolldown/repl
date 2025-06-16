@@ -18,6 +18,11 @@ export default defineNuxtConfig({
     apiHost: 'https://evt.sxzz.dev',
   },
   vite: {
+    resolve: {
+      alias: {
+        path: 'pathe',
+      },
+    },
     build: {
       target: 'esnext',
     },
