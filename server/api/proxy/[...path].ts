@@ -44,6 +44,10 @@ export default eventHandler(async (evt) => {
         `const __wasmUrl = ${JSON.stringify(new URL('./rolldown-binding.wasm32-wasi.wasm', url).href)}`,
       )
       .replaceAll(
+        `const __wasmUrl = new URL('./rolldown-binding.wasm32-wasi.wasm', ${'import.meta'}.url).href`,
+        `const __wasmUrl = ${JSON.stringify(new URL('./rolldown-binding.wasm32-wasi.wasm', url).href)}`,
+      )
+      .replaceAll(
         `from "pathe"`,
         `from "https://cdn.jsdelivr.net/npm/pathe/+esm"`,
       )
