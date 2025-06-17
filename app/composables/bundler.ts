@@ -1,5 +1,4 @@
 import { resolve } from 'pathe'
-import { currentVersion } from '~/state/bundler'
 import type { InputOptions, OutputOptions } from '@rolldown/browser'
 
 export interface TransformResult {
@@ -27,7 +26,7 @@ export async function build(
     ...config,
     plugins: [
       {
-        name: 'bundler-explorer:fs',
+        name: 'rolldown-repl:fs',
         resolveId(source, importer) {
           if (source[0] === '/' || source[0] === '.') {
             return resolve(importer || '/', '..', source)
