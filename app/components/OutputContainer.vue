@@ -57,7 +57,7 @@ const { data, status, error, refresh } = useAsyncData(
       timeCost.value = Math.round(performance.now() - startTime)
     }
   },
-  { server: false, deep: false },
+  { server: false, deep: false, immediate: false },
 )
 
 watch([files, currentVersion], () => refresh(), {
