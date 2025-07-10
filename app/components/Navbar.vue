@@ -10,6 +10,8 @@ import {
   timeCost,
 } from '~/state/bundler'
 
+const { data } = useAsyncData('rolldown-versions', getRolldownVersions)
+
 function resetState() {
   if (
     // eslint-disable-next-line no-alert
@@ -21,16 +23,11 @@ function resetState() {
       if (model.uri.authority === 'model') return
       model.dispose()
     })
-    currentVersion.value = 'latest'
+    currentVersion.value = data.value?.latest || ''
     files.value = defaultFiles()
     activeFile.value = DEFAULT_ENTRY
   }
 }
-
-const { data: versions } = useAsyncData(
-  'rolldown-versions',
-  getRolldownVersions,
-)
 </script>
 
 <template>
@@ -42,9 +39,9 @@ const { data: versions } = useAsyncData(
 
     <div flex="~ center" gap1>
       <select v-model="currentVersion" border rounded p1 text-sm>
-        <option value="latest">Latest</option>
+        <option v-if="data?.latest" :value="data.latest">Latest</option>
         <option
-          v-for="version of versions?.slice(0, 40)"
+          v-for="version of data?.versions.slice(0, 40)"
           :key="version"
           :value="version"
         >
