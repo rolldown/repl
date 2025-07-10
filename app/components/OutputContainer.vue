@@ -5,7 +5,11 @@ import { CONFIG_FILES, currentVersion, files, timeCost } from '~/state/bundler'
 
 const { data, status, error, refresh } = useAsyncData(
   'output',
-  async (): Promise<TransformResult> => {
+  async (): Promise<TransformResult | undefined> => {
+    if (!currentVersion.value) {
+      return
+    }
+
     const entries = Array.from(files.value.entries())
       .filter(([, file]) => file.isEntry)
       .map(([name]) => `/${name}`)
@@ -57,7 +61,7 @@ const { data, status, error, refresh } = useAsyncData(
       timeCost.value = Math.round(performance.now() - startTime)
     }
   },
-  { server: false, deep: false, immediate: false },
+  { server: false, deep: false },
 )
 
 watch([files, currentVersion], () => refresh(), {
