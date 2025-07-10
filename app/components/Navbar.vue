@@ -42,7 +42,6 @@ const { data: versions } = useAsyncData(
 
     <div flex="~ center" gap1>
       <select v-model="currentVersion" border rounded p1 text-sm>
-        <option v-if="versions?.length" :value="versions[0]">Latest</option>
         <option
           v-for="version of versions?.slice(0, 40)"
           :key="version"
