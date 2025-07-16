@@ -75,6 +75,7 @@ const tabs = computed(() => Object.keys(data.value?.output || {}))
 
 const errorText = computed(() => {
   if (!error.value) return ''
+  console.error(error.value)
   const str = ansis.strip(String(error.value))
   let stack: string | undefined
   if (error.value instanceof Error) {
