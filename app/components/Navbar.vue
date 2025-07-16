@@ -10,7 +10,7 @@ import {
   timeCost,
 } from '~/state/bundler'
 
-const { data } = useAsyncData('rolldown-versions', getRolldownVersions)
+const { data: rolldownVersions } = useRolldownVersions()
 
 function resetState() {
   if (
@@ -23,7 +23,7 @@ function resetState() {
       if (model.uri.authority === 'model') return
       model.dispose()
     })
-    currentVersion.value = data.value?.latest || ''
+    currentVersion.value = 'latest'
     files.value = defaultFiles()
     activeFile.value = DEFAULT_ENTRY
   }
@@ -39,9 +39,9 @@ function resetState() {
 
     <div flex="~ center" gap1>
       <select v-model="currentVersion" border rounded p1 text-sm>
-        <option v-if="data?.latest" :value="data.latest">Latest</option>
+        <option value="latest">Latest</option>
         <option
-          v-for="version of data?.versions.slice(0, 40)"
+          v-for="version of rolldownVersions?.versions.slice(0, 40)"
           :key="version"
           :value="version"
         >

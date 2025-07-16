@@ -3,11 +3,16 @@ import ansis from 'ansis'
 import { build } from '~/composables/bundler'
 import { CONFIG_FILES, currentVersion, files, timeCost } from '~/state/bundler'
 
+const { data: rolldownVersions } = await useRolldownVersions()
+
 const { data, status, error, refresh } = useAsyncData(
   'output',
   async (): Promise<TransformResult | undefined> => {
-    if (!currentVersion.value) {
-      return
+    if (!currentVersion.value) return
+
+    let version = currentVersion.value
+    if (version === 'latest') {
+      version = rolldownVersions.value?.latest || 'latest'
     }
 
     const entries = Array.from(files.value.entries())
@@ -15,11 +20,11 @@ const { data, status, error, refresh } = useAsyncData(
       .map(([name]) => `/${name}`)
 
     const core: typeof import('@rolldown/browser') = await importUrl(
-      `/api/proxy/@${currentVersion.value}/dist/index.browser.mjs`,
+      `/api/proxy/@${version}/dist/index.browser.mjs`,
     )
     const experimental: typeof import('@rolldown/browser/experimental') =
       await importUrl(
-        `/api/proxy/@${currentVersion.value}/dist/experimental-index.browser.mjs`,
+        `/api/proxy/@${version}/dist/experimental-index.browser.mjs`,
       )
 
     let configObject: any = {}
