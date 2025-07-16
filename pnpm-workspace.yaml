@@ -1,0 +1,2 @@
+patchedDependencies:
+  nuxt-monaco-editor: patches/nuxt-monaco-editor.patch

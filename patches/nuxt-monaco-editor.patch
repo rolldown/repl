@@ -1,0 +1,15 @@
+diff --git a/CHANGELOG.md b/CHANGELOG.md
+deleted file mode 100644
+index c0645511cdac17bd02a816122081891522555a79..0000000000000000000000000000000000000000
+diff --git a/dist/module.mjs b/dist/module.mjs
+index 882ffa83f67d548e1abc984144e2be6dcac318b5..e085c69df03a6264f8af7ce1ce72b3e62772d087 100644
+--- a/dist/module.mjs
++++ b/dist/module.mjs
+@@ -20,6 +20,7 @@ const plugin = (options, nuxtOptions) => ({
+     }
+   },
+   async load(id) {
++    if (id[0] === '\0') return
+     id = id.split("?")[0];
+     const vsPath = id.includes("monaco-editor/esm") ? id.split("monaco-editor/esm/").pop() : null;
+     if (options.locale !== "en") {
