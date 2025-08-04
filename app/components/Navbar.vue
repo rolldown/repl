@@ -32,12 +32,12 @@ function resetState() {
 
 <template>
   <div flex="~ wrap" items-center justify-between gap2 px2 py2>
-    <div flex="~ gap2" items-center>
+    <div flex="~ gap3" ml1 items-center>
       <img src="/lightning-down.svg" h7 />
-      <h1 mr4 text-xl>Rolldown REPL</h1>
+      <h1 mr4 text-lg>Rolldown REPL</h1>
     </div>
 
-    <div flex="~ center" gap1>
+    <div flex="~ center" gap2>
       <select v-model="currentVersion" border rounded p1 text-sm>
         <option value="latest">Latest</option>
         <option
