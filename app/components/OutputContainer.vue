@@ -132,7 +132,7 @@ const errorText = computed(() => {
     <div
       v-if="status === 'success' && data?.warnings?.length"
       overflow-x-auto
-      max-h-50%
+      max-h="50%"
       whitespace-pre
       pb4
       text-sm
