@@ -44,5 +44,8 @@
     "unocss": "^66.4.2",
     "vue-tsc": "^3.0.5"
   },
+  "resolutions": {
+    "vite": "npm:rolldown-vite@latest"
+  },
   "prettier": "@sxzz/prettier-config"
 }
