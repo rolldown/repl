@@ -10,7 +10,7 @@ import {
   timeCost,
 } from '~/state/bundler'
 
-const { data: rolldownVersions } = useRolldownVersions()
+const { data: rolldownVersions } = await useRolldownVersions()
 
 function resetState() {
   if (
