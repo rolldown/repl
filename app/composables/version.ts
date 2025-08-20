@@ -9,7 +9,7 @@ export async function getRolldownVersions(): Promise<VersionInfo> {
   )
   return {
     latest: response['dist-tags'].latest,
-    versions: Object.keys(response.versions).reverse(),
+    versions: Object.keys(response.versions).toReversed(),
   }
 }
 
