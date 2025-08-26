@@ -34,26 +34,30 @@ const { data, status, error, refresh } = useAsyncData(
     if (tsConfig || jsConfig) {
       let configCode = ''
       if (tsConfig) {
-        configCode = experimental.transform(
-          tsConfig.filename,
-          tsConfig.code,
-        ).code
+        const result = experimental.transform(tsConfig.filename, tsConfig.code)
+        if (result.errors.length) {
+          throw result.errors[0]
+        }
+        configCode = result.code
       } else if (jsConfig) {
         configCode = jsConfig.code
       }
 
-      configUrl = URL.createObjectURL(
-        new Blob([configCode || ''], { type: 'text/javascript' }),
-      )
-      const mod = await import(/* @vite-ignore */ configUrl)
-      URL.revokeObjectURL(configUrl)
-      configObject = mod.default || mod
-      if (typeof configObject === 'function') {
-        configObject = configObject({
-          files: files.value,
-          entries,
-          api: experimental,
-        })
+      if (configCode) {
+        configUrl = URL.createObjectURL(
+          new Blob([configCode], { type: 'text/javascript' }),
+        )
+
+        const mod = await import(/* @vite-ignore */ configUrl)
+        URL.revokeObjectURL(configUrl)
+        configObject = mod.default || mod
+        if (typeof configObject === 'function') {
+          configObject = configObject({
+            files: files.value,
+            entries,
+            api: experimental,
+          })
+        }
       }
     }
 
