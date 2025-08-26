@@ -19,28 +19,33 @@ const { data, status, error, refresh } = useAsyncData(
       .filter(([, file]) => file.isEntry)
       .map(([name]) => `/${name}`)
 
-    const core: typeof import('@rolldown/browser') = await importUrl(
-      `/api/proxy/@${version}/dist/index.browser.mjs`,
-    )
-    const experimental: typeof import('@rolldown/browser/experimental') =
-      await importUrl(
+    const [core, experimental, binding] = await Promise.all([
+      importUrl<typeof import('@rolldown/browser')>(
+        `/api/proxy/@${version}/dist/index.browser.mjs`,
+      ),
+      importUrl<typeof import('@rolldown/browser/experimental')>(
         `/api/proxy/@${version}/dist/experimental-index.browser.mjs`,
-      )
+      ),
+      importUrl<any>(
+        `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`,
+      ),
+    ])
 
     let configObject: any = {}
-    const tsConfig = files.value.get(CONFIG_FILES[0]!)
-    const jsConfig = files.value.get(CONFIG_FILES[1]!)
+    const configFile =
+      files.value.get(CONFIG_FILES[0]!) || files.value.get(CONFIG_FILES[1]!)
     let configUrl: string | undefined
-    if (tsConfig || jsConfig) {
-      let configCode = ''
-      if (tsConfig) {
-        const result = experimental.transform(tsConfig.filename, tsConfig.code)
+    if (configFile) {
+      let configCode = configFile.code
+      if (configFile.filename === CONFIG_FILES[0]) {
+        const result = experimental.transform(
+          configFile.filename,
+          configFile.code,
+        )
         if (result.errors.length) {
           throw result.errors[0]
         }
         configCode = result.code
-      } else if (jsConfig) {
-        configCode = jsConfig.code
       }
 
       if (configCode) {
@@ -55,7 +60,11 @@ const { data, status, error, refresh } = useAsyncData(
           configObject = configObject({
             files: files.value,
             entries,
-            api: experimental,
+            api: {
+              index: core,
+              experimental,
+              binding,
+            },
           })
         }
       }
