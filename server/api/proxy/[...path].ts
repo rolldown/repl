@@ -1,6 +1,14 @@
 export default eventHandler(async (evt) => {
-  const path = getRouterParam(evt, 'path')
-  const url = `https://cdn.jsdelivr.net/npm/@rolldown/browser${path}`
+  let path = getRouterParam(evt, 'path')!
+  const isGit = path.startsWith('@git')
+  if (isGit) {
+    path = path.slice(4)
+  }
+
+  const url = isGit
+    ? `https://esm.sh/pr/@rolldown/browser${path}?raw`
+    : `https://cdn.jsdelivr.net/npm/@rolldown/browser${path}`
+
   const response = await fetch(url, {
     headers: {
       'User-Agent': 'Rolldown Browser Proxy',

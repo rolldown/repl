@@ -12,6 +12,16 @@ import {
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
+function selectCommit() {
+  // eslint-disable-next-line no-alert
+  const commit = prompt(
+    'Enter a Rolldown commit hash, branch name, or PR number',
+    'main',
+  )
+  if (!commit) return
+  currentVersion.value = `git@${commit}`
+}
+
 function resetState() {
   if (
     // eslint-disable-next-line no-alert
@@ -38,7 +48,17 @@ function resetState() {
     </div>
 
     <div flex="~ center" gap2>
+      <button title="Select Commit" nav-button @click="selectCommit">
+        <div i-ri:git-commit-line />
+      </button>
+
       <select v-model="currentVersion" border rounded p1 text-sm>
+        <option
+          v-if="currentVersion.startsWith('git@')"
+          :value="currentVersion"
+        >
+          pkg.pr.new: {{ currentVersion.slice(4) }}
+        </option>
         <option value="latest">Latest</option>
         <option
           v-for="version of rolldownVersions?.versions.slice(0, 40)"
