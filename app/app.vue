@@ -31,10 +31,11 @@ useHeadSafe({
           <InputContainer min-w-0 flex-1 />
           <OutputContainer min-w-0 flex-1 />
         </div>
-        <template #fallback>
-          <Loading />
-        </template>
       </ClientOnly>
     </main>
+
+    <template #fallback>
+      <Loading />
+    </template>
   </Suspense>
 </template>
