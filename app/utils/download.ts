@@ -20,12 +20,9 @@ export function downloadProject() {
       dev: 'rolldown --watch',
     },
     dependencies: {
-      rolldown:
-        currentVersion.value === 'latest'
-          ? '^1.0.0'
-          : currentVersion.value.startsWith('@git')
-            ? `https://pkg.pr.new/rolldown@${currentVersion.value.slice(4)}`
-            : currentVersion.value,
+      rolldown: currentVersion.value.startsWith('@git')
+        ? `https://pkg.pr.new/rolldown@${currentVersion.value.slice(4)}`
+        : currentVersion.value,
     },
   }
 
@@ -42,7 +39,7 @@ export function downloadProject() {
   })
 }
 
-export function triggerDownload(data: Uint8Array, filename: string) {
+function triggerDownload(data: Uint8Array, filename: string) {
   const blob = new Blob([new Uint8Array(data)], { type: 'application/zip' })
   const url = URL.createObjectURL(blob)
 
