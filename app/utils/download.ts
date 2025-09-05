@@ -20,7 +20,7 @@ export function downloadProject() {
       dev: 'rolldown --watch',
     },
     dependencies: {
-      rolldown: currentVersion.value.startsWith('@git')
+      rolldown: currentVersion.value.startsWith('git@')
         ? `https://pkg.pr.new/rolldown@${currentVersion.value.slice(4)}`
         : currentVersion.value,
     },
