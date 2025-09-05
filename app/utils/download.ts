@@ -14,6 +14,7 @@ export function downloadProject() {
     name: 'rolldown-repl-project',
     version: '1.0.0',
     private: true,
+    packageManager: 'pnpm@10.15.0',
     type: 'module',
     scripts: {
       build: 'rolldown',
@@ -37,7 +38,7 @@ export function downloadProject() {
 }
 
 export function triggerDownload(data: Uint8Array, filename: string) {
-  const blob = new Blob([data], { type: 'application/zip' })
+  const blob = new Blob([new Uint8Array(data)], { type: 'application/zip' })
   const url = URL.createObjectURL(blob)
 
   const link = document.createElement('a')
