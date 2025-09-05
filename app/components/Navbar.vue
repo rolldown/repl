@@ -9,6 +9,7 @@ import {
   files,
   timeCost,
 } from '~/state/bundler'
+import { handleDownloadProject } from '~/utils/download'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -84,6 +85,14 @@ function resetState() {
 
       <button title="Reset State" nav-button @click="resetState">
         <div i-ri:refresh-line />
+      </button>
+
+      <button
+        title="Download Project"
+        nav-button
+        @click="handleDownloadProject"
+      >
+        <div i-ri:download-line />
       </button>
 
       <button title="Toggle Dark Mode" nav-button @click="toggleDark">
