@@ -3,7 +3,7 @@ import { STORAGE_PREFIX } from './constants'
 
 const LAST_STATE_KEY = `${STORAGE_PREFIX}last-state`
 
-export function initUrlState() {
+function loadStateFromHash() {
   const serializedUrl = atou(location.hash!.slice(1))
   let state = serializedUrl && JSON.parse(serializedUrl)
   if (!state) {
@@ -23,6 +23,14 @@ export function initUrlState() {
   if (state?.v) {
     currentVersion.value = state.v
   }
+}
+
+export function initUrlState() {
+  // Load initial state from hash or localStorage
+  loadStateFromHash()
+
+  // Listen for hash changes (browser back/forward)
+  window.addEventListener('hashchange', loadStateFromHash)
 
   // serialize state to url
   watchEffect(() => {
