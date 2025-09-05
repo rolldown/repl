@@ -114,7 +114,7 @@ const errorText = computed(() => {
 
 <template>
   <div h-full flex flex-col gap2>
-    <Loading v-if="isLoading && isLoadingDebounced" />
+    <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
     <div
       v-if="status === 'error'"
       overflow-auto

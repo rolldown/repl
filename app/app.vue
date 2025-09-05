@@ -23,19 +23,21 @@ useHeadSafe({
 </script>
 
 <template>
-  <Suspense>
-    <main flex="~ col" lg:h-screen>
-      <ClientOnly>
+  <ClientOnly>
+    <Suspense>
+      <main flex="~ col" lg:h-screen>
         <Navbar />
         <div min-h-0 flex flex-1 flex-col gap4 lg:flex-row>
           <InputContainer min-w-0 flex-1 />
           <OutputContainer min-w-0 flex-1 />
         </div>
-      </ClientOnly>
-    </main>
+      </main>
 
-    <template #fallback>
-      <Loading />
-    </template>
-  </Suspense>
+      <template #fallback>
+        <div h-100vh>
+          <Loading />
+        </div>
+      </template>
+    </Suspense>
+  </ClientOnly>
 </template>

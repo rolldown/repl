@@ -47,7 +47,7 @@ function resetState() {
       <h1 mr4 text-lg>Rolldown REPL</h1>
     </div>
 
-    <div flex="~ center" gap2>
+    <div flex="~ center" gap1>
       <button title="Select Commit" nav-button @click="selectCommit">
         <div i-ri:git-commit-line />
       </button>
