@@ -91,7 +91,10 @@ function createModel(filename: string, code: string) {
   const existing = monaco.editor.getModel(uri)
   if (existing) {
     if (existing.getLanguageId() === language) {
-      existing.setValue(code)
+      // Only update if the content is actually different to prevent cursor reset
+      if (existing.getValue() !== code) {
+        existing.setValue(code)
+      }
       return { uri, model: existing }
     } else {
       existing.dispose()
