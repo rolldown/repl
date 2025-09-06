@@ -39,8 +39,7 @@ watch(options, () => editor?.updateOptions(options.value))
 watch(modelValue, () => {
   if (
     model.value.getValue() !== modelValue.value &&
-    editor &&
-    !editor.getModel()?.isDisposed()
+    !model.value.isDisposed()
   ) {
     model.value.setValue(modelValue.value)
   }
