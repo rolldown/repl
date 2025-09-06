@@ -37,7 +37,10 @@ const options = computed(() => ({
 watch(options, () => editor?.updateOptions(options.value))
 
 watch(modelValue, () => {
-  if (model.value.getValue() !== modelValue.value) {
+  if (
+    model.value.getValue() !== modelValue.value &&
+    !model.value.isDisposed()
+  ) {
     model.value.setValue(modelValue.value)
   }
 })
