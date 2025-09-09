@@ -80,7 +80,7 @@ export async function build(
 
   return {
     output,
-    sourcemaps: Object.keys(sourcemaps).length > 0 ? sourcemaps : undefined,
+    sourcemaps,
     warnings,
   }
 }
