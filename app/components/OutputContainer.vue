@@ -73,14 +73,6 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      // Always enable sourcemap generation
-      if (!configObject.output?.sourcemap) {
-        if (!configObject.output) {
-          configObject.output = {}
-        }
-        configObject.output.sourcemap = true
-      }
-
       const result = await build(core, files.value, entries, configObject)
       return result
     } finally {
