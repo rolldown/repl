@@ -7,7 +7,6 @@ import {
   DEFAULT_ENTRY,
   defaultFiles,
   files,
-  sourcemapEnabled,
   timeCost,
 } from '~/state/bundler'
 import { handleDownloadProject } from '~/utils/download'
@@ -83,19 +82,6 @@ function resetState() {
         <div i-ri:time-line op60 />
         <span op80>{{ timeCost }}ms</span>
       </div>
-
-      <label
-        flex
-        cursor-pointer
-        items-center
-        gap1
-        text-sm
-        title="Generate source maps for visualization"
-      >
-        <input v-model="sourcemapEnabled" type="checkbox" class="mr-1" />
-        <div i-ri:map-line op60 />
-        <span op80>Sourcemap</span>
-      </label>
 
       <button title="Reset State" nav-button @click="resetState">
         <div i-ri:refresh-line />

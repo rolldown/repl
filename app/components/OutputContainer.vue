@@ -1,13 +1,7 @@
 <script setup lang="ts">
 import ansis from 'ansis'
 import { build } from '~/composables/bundler'
-import {
-  CONFIG_FILES,
-  currentVersion,
-  files,
-  sourcemapEnabled,
-  timeCost,
-} from '~/state/bundler'
+import { CONFIG_FILES, currentVersion, files, timeCost } from '~/state/bundler'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -79,8 +73,8 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      // Ensure sourcemap is enabled if the state is set
-      if (sourcemapEnabled.value && !configObject.output?.sourcemap) {
+      // Always enable sourcemap generation
+      if (!configObject.output?.sourcemap) {
         if (!configObject.output) {
           configObject.output = {}
         }
@@ -96,7 +90,7 @@ const { data, status, error, refresh } = useAsyncData(
   { server: false, deep: false },
 )
 
-watch([files, currentVersion, sourcemapEnabled], () => refresh(), {
+watch([files, currentVersion], () => refresh(), {
   deep: true,
 })
 
