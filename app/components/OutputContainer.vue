@@ -111,18 +111,15 @@ const errorText = computed(() => {
   return `${str}\n\n${stack && str !== stack ? `${stack}\n` : ''}`
 })
 
-// Helper function for UTF-8 encoding (needed for sourcemap visualization with unicode)
 const utf16ToUTF8 = (str: string) => unescape(encodeURIComponent(str))
 
 const sourcemapLinks = computed(() => {
   if (!data.value?.output || !data.value?.sourcemaps) return {}
 
   const links: Record<string, string> = {}
-
   for (const [fileName, code] of Object.entries(data.value.output)) {
     const sourcemap = data.value.sourcemaps[fileName]
     if (code && sourcemap) {
-      // Encode for source map visualization
       const encodedCode = utf16ToUTF8(code)
       const encodedMap = utf16ToUTF8(sourcemap)
       const hash = btoa(
