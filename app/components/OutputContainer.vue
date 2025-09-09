@@ -110,6 +110,28 @@ const errorText = computed(() => {
   }
   return `${str}\n\n${stack && str !== stack ? `${stack}\n` : ''}`
 })
+
+const utf16ToUTF8 = (str: string) => unescape(encodeURIComponent(str))
+
+const sourcemapLinks = computed(() => {
+  if (!data.value?.output || !data.value?.sourcemaps) return {}
+
+  const links: Record<string, string> = {}
+  for (const [fileName, code] of Object.entries(data.value.output)) {
+    const sourcemap = data.value.sourcemaps[fileName]
+    if (code && sourcemap) {
+      const encodedCode = utf16ToUTF8(code)
+      const encodedMap = utf16ToUTF8(sourcemap)
+      const hash = btoa(
+        `${encodedCode.length}\0${encodedCode}${encodedMap.length}\0${encodedMap}`,
+      )
+      links[fileName] =
+        `https://evanw.github.io/source-map-visualization/#${hash}`
+    }
+  }
+
+  return links
+})
 </script>
 
 <template>
@@ -133,14 +155,32 @@ const errorText = computed(() => {
       w-full
       flex-1
     >
-      <CodeEditor
-        :model-value="data?.output[value] || ''"
-        language="javascript"
-        readonly
-        min-h-0
-        w-full
-        flex-1
-      />
+      <div min-h-0 w-full flex flex-1 flex-col>
+        <CodeEditor
+          :model-value="data?.output[value] || ''"
+          language="javascript"
+          readonly
+          min-h-0
+          w-full
+          flex-1
+        />
+        <a
+          v-if="sourcemapLinks[value]"
+          class="m-2 flex items-center self-start text-sm opacity-80"
+          :href="sourcemapLinks[value]"
+          target="_blank"
+          rel="noopener"
+        >
+          <span
+            class="text-[#3c3c43] font-medium dark:text-[#fffff5]/[.86] hover:text-[#3451b2] dark:hover:text-[#a8b1ff]"
+          >
+            Visualize source map
+          </span>
+          <div
+            class="i-ri:arrow-right-up-line ml-1 h-3 w-3 text-[#3c3c43]/[.56] dark:text-[#fffff5]/[.6]"
+          />
+        </a>
+      </div>
     </Tabs>
     <div
       v-if="status === 'success' && data?.warnings?.length"

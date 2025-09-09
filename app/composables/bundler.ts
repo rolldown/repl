@@ -1,8 +1,13 @@
 import { resolve } from 'pathe'
-import type { InputOptions, OutputOptions } from '@rolldown/browser'
+import type {
+  InputOptions,
+  OutputChunk,
+  OutputOptions,
+} from '@rolldown/browser'
 
 export interface TransformResult {
   output: Record<string, string>
+  sourcemaps?: Record<string, string>
   warnings?: string[]
 }
 
@@ -61,8 +66,21 @@ export async function build(
           ],
     ),
   )
+
+  const sourcemaps = Object.fromEntries(
+    result.output
+      .filter(
+        (chunk): chunk is OutputChunk => chunk.type === 'chunk' && !!chunk.map,
+      )
+      .map((chunk) => [
+        chunk.fileName,
+        typeof chunk.map === 'string' ? chunk.map : JSON.stringify(chunk.map),
+      ]),
+  )
+
   return {
     output,
+    sourcemaps,
     warnings,
   }
 }
