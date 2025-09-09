@@ -3,6 +3,7 @@ import type { InputOptions, OutputOptions } from '@rolldown/browser'
 
 export interface TransformResult {
   output: Record<string, string>
+  sourcemaps?: Record<string, string>
   warnings?: string[]
 }
 
@@ -61,8 +62,21 @@ export async function build(
           ],
     ),
   )
+
+  const sourcemaps = Object.fromEntries(
+    result.output
+      .filter((chunk) => chunk.type === 'chunk' && (chunk as any).map)
+      .map((chunk) => [
+        chunk.fileName,
+        typeof (chunk as any).map === 'string'
+          ? (chunk as any).map
+          : JSON.stringify((chunk as any).map),
+      ]),
+  )
+
   return {
     output,
+    sourcemaps: Object.keys(sourcemaps).length > 0 ? sourcemaps : undefined,
     warnings,
   }
 }

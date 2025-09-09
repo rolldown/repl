@@ -22,5 +22,6 @@ export const defaultFiles = () => {
 export const files = ref<SourceFileMap>(defaultFiles())
 export const activeFile = ref<string>()
 export const timeCost = ref<number>()
+export const sourcemapEnabled = ref<boolean>(false)
 
 export const currentVersion = ref<string>('latest')
