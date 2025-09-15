@@ -20,13 +20,15 @@ const { data, status, error, refresh } = useAsyncData(
       .map(([name]) => `/${name}`)
 
     const [core, experimental, binding] = await Promise.all([
-      import(`/api/proxy/@${version}/dist/index.browser.mjs`) as Promise<
-        typeof import('@rolldown/browser')
-      >,
       import(
-        `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
+        /* @vite-ignore */ `/api/proxy/@${version}/dist/index.browser.mjs`
+      ) as Promise<typeof import('@rolldown/browser')>,
+      import(
+        /* @vite-ignore */ `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
       ) as Promise<typeof import('@rolldown/browser/experimental')>,
-      import(`/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`),
+      import(
+        /* @vite-ignore */ `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`
+      ),
     ])
 
     let configObject: any = {}
