@@ -42,6 +42,7 @@
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
     "unocss": "^66.5.0",
+    "vite": "npm:rolldown-vite@^7.1.9",
     "vue-tsc": "^3.0.6"
   },
   "resolutions": {
