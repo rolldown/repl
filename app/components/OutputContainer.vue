@@ -20,15 +20,13 @@ const { data, status, error, refresh } = useAsyncData(
       .map(([name]) => `/${name}`)
 
     const [core, experimental, binding] = await Promise.all([
-      importUrl<typeof import('@rolldown/browser')>(
-        `/api/proxy/@${version}/dist/index.browser.mjs`,
-      ),
-      importUrl<typeof import('@rolldown/browser/experimental')>(
-        `/api/proxy/@${version}/dist/experimental-index.browser.mjs`,
-      ),
-      importUrl<any>(
-        `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`,
-      ),
+      import(`/api/proxy/@${version}/dist/index.browser.mjs`) as Promise<
+        typeof import('@rolldown/browser')
+      >,
+      import(
+        `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
+      ) as Promise<typeof import('@rolldown/browser/experimental')>,
+      import(`/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`),
     ])
 
     let configObject: any = {}
@@ -73,7 +71,13 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      const result = await build(core, files.value, entries, configObject)
+      const result = await build(
+        core,
+        binding,
+        files.value,
+        entries,
+        configObject,
+      )
       return result
     } finally {
       timeCost.value = Math.round(performance.now() - startTime)

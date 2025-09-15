@@ -1,4 +1,3 @@
-import { resolve } from 'pathe'
 import type {
   InputOptions,
   OutputChunk,
@@ -13,10 +12,18 @@ export interface TransformResult {
 
 export async function build(
   core: typeof import('@rolldown/browser'),
+  { __volume }: any,
   files: SourceFileMap,
   input: string[],
   config: any,
 ): Promise<TransformResult> {
+  __volume.reset()
+  const inputFileJSON: Record<string, string> = {}
+  for (const file of files.values()) {
+    inputFileJSON[file.filename] = file.code
+  }
+  __volume.fromJSON(inputFileJSON)
+
   const warnings: string[] = []
   const inputOptions: InputOptions = {
     input,
@@ -29,24 +36,6 @@ export async function build(
       }
     },
     ...config,
-    plugins: [
-      {
-        name: 'rolldown-repl:fs',
-        resolveId(source, importer) {
-          if (source[0] === '/' || source[0] === '.') {
-            return resolve(importer || '/', '..', source)
-          }
-        },
-        load(id) {
-          if (id[0] !== '/') return
-          id = id.slice(1)
-          if (files.has(id)) {
-            return files.get(id)!.code
-          }
-        },
-      },
-      config?.plugins,
-    ],
   }
   const outputOptions: OutputOptions = {
     format: 'esm',
