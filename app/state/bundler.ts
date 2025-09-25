@@ -1,12 +1,9 @@
 export const codeTemplate = 'export const foo = 42'
 export const configTemplate = `import type { RolldownOptions } from 'rolldown'
 
-export default ({ api }): RolldownOptions => {
-  return {}
-}
+const config: RolldownOptions = {\n\n}
 
-// Tips: api.index        === await import('rolldown')
-//       api.experimental === await import('rolldown/experimental')
+export default config
 `
 
 export const DEFAULT_ENTRY = 'index.ts'

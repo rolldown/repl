@@ -21,7 +21,7 @@ export default defineConfig({
     'flex-y-center': 'items-center',
 
     'nav-button':
-      'flex flex-center rounded-md p1.5 hover:bg-gray hover:bg-opacity-20',
+      'flex flex-center rounded-lg p1.5 hover:bg-gray hover:bg-opacity-20',
 
     'z-panel': 'z-10',
   },

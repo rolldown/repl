@@ -150,7 +150,7 @@ function horizontalScroll(e: WheelEvent) {
             title="Remove"
             p="0.5"
             :class="active === name && 'op60'"
-            rounded
+            rounded-md
             op0
             transition-300
             transition-opacity
@@ -163,7 +163,14 @@ function horizontalScroll(e: WheelEvent) {
         </div>
       </div>
 
-      <button v-if="!readonly" ml3 rounded p1 hover:bg-gray:30 @click="addTab">
+      <button
+        v-if="!readonly"
+        ml3
+        rounded-lg
+        p1
+        hover:bg-gray:30
+        @click="addTab"
+      >
         <div i-ri:add-fill text-lg />
       </button>
     </div>

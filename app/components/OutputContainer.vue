@@ -31,33 +31,43 @@ const { data, status, error, refresh } = useAsyncData(
       ),
     ])
 
+    binding.__volume.reset()
+    const inputFileJSON: Record<string, string> = {}
+    for (const file of files.value.values()) {
+      inputFileJSON[file.filename] = file.code
+    }
+    binding.__volume.fromJSON(inputFileJSON)
+
     let configObject: any = {}
     const configFile =
       files.value.get(CONFIG_FILES[0]!) || files.value.get(CONFIG_FILES[1]!)
-    let configUrl: string | undefined
     if (configFile) {
-      let configCode = configFile.code
-      if (configFile.filename === CONFIG_FILES[0]) {
-        const result = experimental.transform(
-          configFile.filename,
-          configFile.code,
-        )
-        if (result.errors.length) {
-          throw result.errors[0]
+      const { output } = await core.build({
+        input: `/${configFile.filename}`,
+        cwd: '/',
+        output: { format: 'cjs' },
+        write: false,
+        external: ['rolldown', 'rolldown/experimental'],
+      })
+      const configCode = output[0].code
+
+      if (configCode.trim()) {
+        const configFn = new Function('require, module', configCode)
+        const require = (id: string) => {
+          switch (id) {
+            case 'rolldown':
+              return core
+            case 'rolldown/experimental':
+              return experimental
+          }
+          throw new Error(`Cannot import '${id}' in config file`)
         }
-        configCode = result.code
-      }
+        const module = { exports: {} as any }
+        configFn(require, module)
 
-      if (configCode) {
-        configUrl = URL.createObjectURL(
-          new Blob([configCode], { type: 'text/javascript' }),
-        )
-
-        const mod = await import(/* @vite-ignore */ configUrl)
-        URL.revokeObjectURL(configUrl)
-        configObject = mod.default || mod
+        configObject = await (module.exports?.default || module.exports)
         if (typeof configObject === 'function') {
-          configObject = configObject({
+          configObject = await configObject({
             files: files.value,
             entries,
             api: {
@@ -73,13 +83,7 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      const result = await build(
-        core,
-        binding,
-        files.value,
-        entries,
-        configObject,
-      )
+      const result = await build(core, entries, configObject)
       return result
     } finally {
       timeCost.value = Math.round(performance.now() - startTime)

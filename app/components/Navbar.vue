@@ -49,6 +49,20 @@ function resetState() {
     </div>
 
     <div flex="~ center" gap1>
+      <div
+        v-if="timeCost != null"
+        flex
+        items-center
+        gap1
+        text-sm
+        font-mono
+        op60
+        title="Time Cost"
+      >
+        <div i-ri:time-line />
+        <span>{{ timeCost }}ms</span>
+      </div>
+
       <button title="Select Commit" nav-button @click="selectCommit">
         <div i-ri:git-commit-line />
       </button>
@@ -69,19 +83,6 @@ function resetState() {
           {{ version }}
         </option>
       </select>
-
-      <div
-        v-if="timeCost != null"
-        flex
-        items-center
-        gap1
-        text-sm
-        font-mono
-        title="Time Cost"
-      >
-        <div i-ri:time-line op60 />
-        <span op80>{{ timeCost }}ms</span>
-      </div>
 
       <button title="Reset State" nav-button @click="resetState">
         <div i-ri:refresh-line />

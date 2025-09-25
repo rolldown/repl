@@ -12,18 +12,9 @@ export interface TransformResult {
 
 export async function build(
   core: typeof import('@rolldown/browser'),
-  { __volume }: any,
-  files: SourceFileMap,
   input: string[],
   config: any,
 ): Promise<TransformResult> {
-  __volume.reset()
-  const inputFileJSON: Record<string, string> = {}
-  for (const file of files.values()) {
-    inputFileJSON[file.filename] = file.code
-  }
-  __volume.fromJSON(inputFileJSON)
-
   const warnings: string[] = []
   const inputOptions: InputOptions = {
     input,
