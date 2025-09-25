@@ -1,7 +1,8 @@
-import * as monaco from 'monaco-editor'
 import { activeFile, files } from '~/state/bundler'
 
-export default defineNuxtPlugin(() => {
+export default defineNuxtPlugin(async () => {
+  const monaco = await useMonaco()
+
   monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
     allowComments: true,
     enableSchemaRequest: true,
