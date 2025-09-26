@@ -30,7 +30,7 @@ export function initUrlState() {
   loadStateFromHash()
 
   // Listen for hash changes (browser back/forward)
-  window.addEventListener('hashchange', loadStateFromHash)
+  globalThis.addEventListener('hashchange', loadStateFromHash)
 
   // serialize state to url
   watchEffect(() => {

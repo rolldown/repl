@@ -49,11 +49,11 @@ export default eventHandler(async (evt) => {
       )
       .replaceAll(
         `import __wasmUrl from './rolldown-binding.wasm32-wasi.wasm?url'`,
-        `const __wasmUrl = ${JSON.stringify(new URL('./rolldown-binding.wasm32-wasi.wasm', url).href)}`,
+        `const __wasmUrl = ${JSON.stringify(new URL('rolldown-binding.wasm32-wasi.wasm', url).href)}`,
       )
       .replaceAll(
         `const __wasmUrl = new URL('./rolldown-binding.wasm32-wasi.wasm', ${'import.meta'}.url).href`,
-        `const __wasmUrl = ${JSON.stringify(new URL('./rolldown-binding.wasm32-wasi.wasm', url).href)}`,
+        `const __wasmUrl = ${JSON.stringify(new URL('rolldown-binding.wasm32-wasi.wasm', url).href)}`,
       )
       .replaceAll(
         `from "pathe"`,
