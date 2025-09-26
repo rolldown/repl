@@ -20,6 +20,15 @@ export default defineNuxtPlugin(async () => {
     jsx: monaco.languages.typescript.JsxEmit.Preserve,
     resolveJsonModule: true,
   })
+  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
+  monaco.languages.typescript.typescriptDefaults.setExtraLibs([
+    {
+      content: `declare global {
+        interface ImportMeta { input: string }
+      }
+      export {}`,
+    },
+  ])
 
   monaco.editor.registerEditorOpener({
     openCodeEditor(_, resource) {

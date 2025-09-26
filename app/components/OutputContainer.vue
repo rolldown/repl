@@ -1,7 +1,13 @@
 <script setup lang="ts">
 import ansis from 'ansis'
 import { build } from '~/composables/bundler'
-import { CONFIG_FILES, currentVersion, files, timeCost } from '~/state/bundler'
+import {
+  CONFIG_FILES,
+  currentVersion,
+  entries,
+  files,
+  timeCost,
+} from '~/state/bundler'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -14,10 +20,6 @@ const { data, status, error, refresh } = useAsyncData(
     if (version === 'latest') {
       version = rolldownVersions.value?.latest || 'latest'
     }
-
-    const entries = Array.from(files.value.entries())
-      .filter(([, file]) => file.isEntry)
-      .map(([name]) => `/${name}`)
 
     const [core, experimental, binding] = await Promise.all([
       import(
@@ -48,11 +50,12 @@ const { data, status, error, refresh } = useAsyncData(
         output: { format: 'cjs' },
         write: false,
         external: ['rolldown', 'rolldown/experimental'],
+        define: { 'import.meta': 'importMeta' },
       })
       const configCode = output[0].code
 
       if (configCode.trim()) {
-        const configFn = new Function('require, module', configCode)
+        const configFn = new Function('require, module, importMeta', configCode)
         const require = (id: string) => {
           switch (id) {
             case 'rolldown':
@@ -63,13 +66,14 @@ const { data, status, error, refresh } = useAsyncData(
           throw new Error(`Cannot import '${id}' in config file`)
         }
         const module = { exports: {} as any }
-        configFn(require, module)
+        const importMeta = { input: entries.value }
+        configFn(require, module, importMeta)
 
         configObject = await (module.exports?.default || module.exports)
         if (typeof configObject === 'function') {
           configObject = await configObject({
             files: files.value,
-            entries,
+            entries: entries.value,
             api: {
               index: core,
               experimental,
@@ -83,7 +87,7 @@ const { data, status, error, refresh } = useAsyncData(
     const startTime = performance.now()
 
     try {
-      const result = await build(core, entries, configObject)
+      const result = await build(core, entries.value, configObject)
       return result
     } finally {
       timeCost.value = Math.round(performance.now() - startTime)

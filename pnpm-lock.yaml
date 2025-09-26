@@ -19,6 +19,9 @@ importers:
       '@shikijs/monaco':
         specifier: ^3.13.0
         version: 3.13.0
+      '@stackblitz/sdk':
+        specifier: ^1.11.0
+        version: 1.11.0
       '@vueuse/core':
         specifier: ^13.9.0
         version: 13.9.0(vue@3.5.22(typescript@5.9.2))
@@ -1411,6 +1414,9 @@ packages:
 
   '@speed-highlight/core@1.2.7':
     resolution: {integrity: sha512-0dxmVj4gxg3Jg879kvFS/msl4s9F3T9UXC1InxgOf7t5NvcPD97u/WTA5vL/IxWHMn7qSxBozqrnnE2wvl1m8g==}
+
+  '@stackblitz/sdk@1.11.0':
+    resolution: {integrity: sha512-DFQGANNkEZRzFk1/rDP6TcFdM82ycHE+zfl9C/M/jXlH68jiqHWHFMQURLELoD8koxvu/eW5uhg94NSAZlYrUQ==}
 
   '@sxzz/eslint-config@7.2.1':
     resolution: {integrity: sha512-McuIr9R9ZhB7vCGV5ZaVUfFIaJh92qaowGInAWEwjtRI16sYPjF0605nCwgjNFeZ3XD+SyhutG/IFel6XQ5oiA==}
@@ -6220,6 +6226,8 @@ snapshots:
   '@sindresorhus/merge-streams@2.3.0': {}
 
   '@speed-highlight/core@1.2.7': {}
+
+  '@stackblitz/sdk@1.11.0': {}
 
   '@sxzz/eslint-config@7.2.1(@types/eslint@9.6.1)(@typescript-eslint/eslint-plugin@8.44.1(@typescript-eslint/parser@8.44.1(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(@typescript-eslint/parser@8.44.1(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(@typescript-eslint/utils@8.44.1(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(@unocss/eslint-plugin@66.5.2(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2))(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2)':
     dependencies:

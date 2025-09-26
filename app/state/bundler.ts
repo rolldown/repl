@@ -1,7 +1,9 @@
 export const codeTemplate = 'export const foo = 42'
 export const configTemplate = `import type { RolldownOptions } from 'rolldown'
 
-const config: RolldownOptions = {\n\n}
+const config: RolldownOptions = {
+  input: import.meta.input,
+}
 
 export default config
 `
@@ -17,6 +19,11 @@ export const defaultFiles = () => {
 }
 
 export const files = ref<SourceFileMap>(defaultFiles())
+export const entries = computed(() =>
+  Array.from(files.value.values())
+    .filter((file) => file.isEntry)
+    .map((file) => file.filename),
+)
 export const activeFile = ref<string>()
 export const timeCost = ref<number>()
 
