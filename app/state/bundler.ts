@@ -1,3 +1,7 @@
+if (import.meta.client) {
+  await useMonaco()
+}
+
 export const codeTemplate = 'export const foo = 42'
 export const configTemplate = `import type { RolldownOptions } from 'rolldown'
 
