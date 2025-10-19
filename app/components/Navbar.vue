@@ -66,7 +66,7 @@ async function handleOpenInStackBlitz() {
       scripts: {
         build: 'rolldown -c',
       },
-      dependencies: {
+      devDependencies: {
         rolldown: currentVersion.value.startsWith('git@')
           ? `https://pkg.pr.new/@rolldown/browser${currentVersion.value.slice(3)}`
           : `npm:@rolldown/browser@${currentVersion.value}`,
