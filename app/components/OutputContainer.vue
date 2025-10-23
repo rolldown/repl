@@ -50,7 +50,9 @@ const { data, status, error, refresh } = useAsyncData(
         output: { format: 'cjs' },
         write: false,
         external: ['rolldown', 'rolldown/experimental'],
-        define: { 'import.meta': 'importMeta' },
+        transform: {
+          define: { 'import.meta': 'importMeta' },
+        },
       })
       const configCode = output[0].code
 
