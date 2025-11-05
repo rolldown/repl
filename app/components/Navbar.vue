@@ -156,6 +156,14 @@ async function handleOpenInStackBlitz() {
         <div i-ri:sun-line dark:i-ri:moon-line />
       </button>
       <a
+        href="https://rolldown.rs/"
+        target="_blank"
+        title="Documentation"
+        nav-button
+      >
+        <div i-ri:book-open-line />
+      </a>
+      <a
         href="https://github.com/rolldown/repl"
         target="_blank"
         title="GitHub"
