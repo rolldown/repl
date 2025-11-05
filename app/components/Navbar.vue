@@ -158,6 +158,7 @@ async function handleOpenInStackBlitz() {
       <a
         href="https://rolldown.rs/"
         target="_blank"
+        rel="noopener"
         title="Documentation"
         nav-button
       >
@@ -166,6 +167,7 @@ async function handleOpenInStackBlitz() {
       <a
         href="https://github.com/rolldown/repl"
         target="_blank"
+        rel="noopener"
         title="GitHub"
         nav-button
       >
