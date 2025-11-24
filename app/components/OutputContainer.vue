@@ -21,13 +21,16 @@ const { data, status, error, refresh } = useAsyncData(
       version = rolldownVersions.value?.latest || 'latest'
     }
 
-    const [core, experimental, binding] = await Promise.all([
+    const [core, experimental, plugins, binding] = await Promise.all([
       import(
         /* @vite-ignore */ `/api/proxy/@${version}/dist/index.browser.mjs`
       ) as Promise<typeof import('@rolldown/browser')>,
       import(
         /* @vite-ignore */ `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
       ) as Promise<typeof import('@rolldown/browser/experimental')>,
+      import(
+        /* @vite-ignore */ `/api/proxy/@${version}/dist/plugins-index.browser.mjs`
+      ).catch(() => null),
       import(
         /* @vite-ignore */ `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`
       ),
@@ -49,7 +52,7 @@ const { data, status, error, refresh } = useAsyncData(
         cwd: '/',
         output: { format: 'cjs' },
         write: false,
-        external: ['rolldown', 'rolldown/experimental'],
+        external: ['rolldown', /^rolldown\//],
         transform: {
           define: { 'import.meta': 'importMeta' },
         },
@@ -64,6 +67,8 @@ const { data, status, error, refresh } = useAsyncData(
               return core
             case 'rolldown/experimental':
               return experimental
+            case 'rolldown/plugins':
+              return plugins
           }
           throw new Error(`Cannot import '${id}' in config file`)
         }
@@ -79,6 +84,7 @@ const { data, status, error, refresh } = useAsyncData(
             api: {
               index: core,
               experimental,
+              plugins,
               binding,
             },
           })
