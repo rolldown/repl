@@ -108,7 +108,9 @@ function onDragOver(index: number, e: DragEvent) {
 }
 
 function onDragLeave() {
-  dragOverIndex.value = null
+  if (draggingIndex.value !== null) {
+    dragOverIndex.value = null
+  }
 }
 
 function onDrop(toIndex: number, e: DragEvent) {

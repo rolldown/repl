@@ -30,9 +30,11 @@ function removeTab(name: string) {
 
 function moveTab(fromIndex: number, toIndex: number) {
   const entries = Array.from(files.value.entries())
-  const [movedEntry] = entries.splice(fromIndex, 1)
-  entries.splice(toIndex, 0, movedEntry!)
-  files.value = new Map(entries)
+  if (fromIndex >= 0 && fromIndex < entries.length) {
+    const [movedEntry] = entries.splice(fromIndex, 1)
+    entries.splice(toIndex, 0, movedEntry!)
+    files.value = new Map(entries)
+  }
 }
 
 function setEntry(name: string) {
