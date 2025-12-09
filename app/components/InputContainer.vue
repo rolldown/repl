@@ -28,6 +28,13 @@ function removeTab(name: string) {
   files.value.delete(name)
 }
 
+function moveTab(fromIndex: number, toIndex: number) {
+  const entries = Array.from(files.value.entries())
+  const [movedEntry] = entries.splice(fromIndex, 1)
+  entries.splice(toIndex, 0, movedEntry!)
+  files.value = new Map(entries)
+}
+
 function setEntry(name: string) {
   const file = files.value.get(name)
   if (file) {
@@ -47,6 +54,7 @@ function setEntry(name: string) {
       @add-tab="addTab"
       @rename-tab="renameTab"
       @remove-tab="removeTab"
+      @move-tab="moveTab"
     >
       <template #default="{ value }">
         <CodeEditor
