@@ -10,6 +10,7 @@ const emit = defineEmits<{
   addTab: [name: string]
   renameTab: [oldName: string, newName: string]
   removeTab: [name: string]
+  moveTab: [fromIndex: number, toIndex: number]
 }>()
 
 const active = defineModel<string>({
@@ -32,6 +33,10 @@ const renamingTab = ref<string>()
 const renameInput = ref('')
 const renameInputRef = useTemplateRef<HTMLInputElement[]>('rename-input')
 const tabsRef = useTemplateRef<HTMLDivElement>('tabsRef')
+
+// Drag and drop state
+const draggingIndex = ref<number>()
+const dragOverIndex = ref<number>()
 
 function addTab() {
   const base = 'untitled'
@@ -83,6 +88,46 @@ function horizontalScroll(e: WheelEvent) {
     left: el.scrollLeft + delta,
   })
 }
+
+function onDragStart(index: number, e: DragEvent) {
+  if (readonly) return
+  draggingIndex.value = index
+  if (e.dataTransfer) {
+    e.dataTransfer.effectAllowed = 'move'
+    e.dataTransfer.setData('text/plain', String(index))
+  }
+}
+
+function onDragOver(index: number, e: DragEvent) {
+  if (readonly || draggingIndex.value === null) return
+  e.preventDefault()
+  dragOverIndex.value = index
+  if (e.dataTransfer) {
+    e.dataTransfer.dropEffect = 'move'
+  }
+}
+
+function onDragLeave() {
+  if (draggingIndex.value !== undefined) {
+    dragOverIndex.value = undefined
+  }
+}
+
+function onDrop(toIndex: number, e: DragEvent) {
+  if (readonly || draggingIndex.value === undefined) return
+  e.preventDefault()
+  const fromIndex = draggingIndex.value
+  if (fromIndex !== toIndex) {
+    emit('moveTab', fromIndex, toIndex)
+  }
+  draggingIndex.value = undefined
+  dragOverIndex.value = undefined
+}
+
+function onDragEnd() {
+  draggingIndex.value = undefined
+  dragOverIndex.value = undefined
+}
 </script>
 
 <template>
@@ -97,7 +142,7 @@ function horizontalScroll(e: WheelEvent) {
         @wheel.prevent="horizontalScroll"
       >
         <div
-          v-for="name of tabs"
+          v-for="(name, index) of tabs"
           :key="name"
           border-b="~ 2"
           group
@@ -108,13 +153,21 @@ function horizontalScroll(e: WheelEvent) {
           rounded-t
           py1
           pl2
+          :draggable="!readonly"
           :class="[
             active === name && 'border-b-blue-500',
             renamingTab === name && 'bg-gray:10',
             readonly && 'pr2',
+            draggingIndex === index && 'opacity-50',
+            dragOverIndex === index && 'bg-blue-500:20',
           ]"
           @click="active = name"
           @dblclick="!readonly && startRename(name)"
+          @dragstart="onDragStart(index, $event)"
+          @dragover="onDragOver(index, $event)"
+          @dragleave="onDragLeave"
+          @drop="onDrop(index, $event)"
+          @dragend="onDragEnd"
         >
           <slot name="tab-prefix" :value="name" />
 
