@@ -35,8 +35,8 @@ const renameInputRef = useTemplateRef<HTMLInputElement[]>('rename-input')
 const tabsRef = useTemplateRef<HTMLDivElement>('tabsRef')
 
 // Drag and drop state
-const draggingIndex = ref<number | null>(null)
-const dragOverIndex = ref<number | null>(null)
+const draggingIndex = ref<number>()
+const dragOverIndex = ref<number>()
 
 function addTab() {
   const base = 'untitled'
@@ -108,25 +108,25 @@ function onDragOver(index: number, e: DragEvent) {
 }
 
 function onDragLeave() {
-  if (draggingIndex.value !== null) {
-    dragOverIndex.value = null
+  if (draggingIndex.value !== undefined) {
+    dragOverIndex.value = undefined
   }
 }
 
 function onDrop(toIndex: number, e: DragEvent) {
-  if (readonly || draggingIndex.value === null) return
+  if (readonly || draggingIndex.value === undefined) return
   e.preventDefault()
   const fromIndex = draggingIndex.value
   if (fromIndex !== toIndex) {
     emit('moveTab', fromIndex, toIndex)
   }
-  draggingIndex.value = null
-  dragOverIndex.value = null
+  draggingIndex.value = undefined
+  dragOverIndex.value = undefined
 }
 
 function onDragEnd() {
-  draggingIndex.value = null
-  dragOverIndex.value = null
+  draggingIndex.value = undefined
+  dragOverIndex.value = undefined
 }
 </script>
 
