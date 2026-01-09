@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { toggleDark } from '#imports'
+import { toggleDark, isDark } from '#imports'
 import * as monaco from 'monaco-editor'
 import {
   activeFile,
@@ -92,7 +92,7 @@ async function handleOpenInStackBlitz() {
 <template>
   <div flex="~ wrap" items-center justify-between gap2 px2 py2>
     <div flex="~ gap3" ml1 items-center>
-      <img src="/lightning-down.svg" h7 />
+      <img :src="isDark ? '/rolldown-light.svg' : '/rolldown-dark.svg'" h7 />
       <h1 mr4 text-lg>Rolldown REPL</h1>
     </div>
 
