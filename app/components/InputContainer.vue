@@ -83,14 +83,14 @@ function setEntry(name: string) {
           hover:bg-op-60
           :class="
             files.get(value)?.isEntry
-              ? 'bg-green-400 text-black bg-op-90'
+              ? 'bg-#d44803 text-white bg-op-90'
               : 'bg-gray bg-op-0'
           "
           @click="setEntry(value)"
         >
-          <div title="Config File" i-ri:anchor-line />
+          <div title="Toggle Entry" i-ph:house-line-duotone />
         </button>
-        <div v-else i-ri:file-settings-line />
+        <img v-else src="/rolldown-bracketless.svg" h-3.5 title="Config File" />
       </template>
     </Tabs>
   </div>
