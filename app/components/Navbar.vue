@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { isDark, toggleDark } from '#imports'
 import * as monaco from 'monaco-editor'
 import {
   activeFile,
@@ -12,6 +11,7 @@ import {
   timeCost,
 } from '~/state/bundler'
 import { handleDownloadProject } from '~/utils/download'
+import { isDark, toggleDark } from '#imports'
 import type { Project } from '@stackblitz/sdk'
 
 const { data: rolldownVersions } = await useRolldownVersions()

@@ -1,11 +1,10 @@
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - '@rolldown/browser'
-  - esbuild
-  - unrs-resolver
-
 patchedDependencies:
   nuxt-monaco-editor: patches/nuxt-monaco-editor.patch
+
+allowBuilds:
+  '@parcel/watcher': false
+  '@rolldown/browser': false
+  esbuild: false
 
 trustPolicy: no-downgrade
 trustPolicyExclude:

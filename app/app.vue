@@ -18,7 +18,9 @@ useHeadSafe({
   htmlAttrs: {
     lang: 'en',
   },
-  link: [{ rel: 'icon', type: 'image/svg+xml', href: '/rolldown-bracketless.svg' }],
+  link: [
+    { rel: 'icon', type: 'image/svg+xml', href: '/rolldown-bracketless.svg' },
+  ],
 })
 </script>
 

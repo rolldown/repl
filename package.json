@@ -1,9 +1,9 @@
 {
   "name": "bundler-explorer",
+  "type": "module",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@10.25.0",
-  "type": "module",
+  "packageManager": "pnpm@10.27.0",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -15,7 +15,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
-    "@shikijs/monaco": "^3.19.0",
+    "@shikijs/monaco": "^3.21.0",
     "@stackblitz/sdk": "^1.11.0",
     "@vueuse/core": "^14.1.0",
     "ansis": "^4.2.0",
@@ -24,30 +24,30 @@
     "monaco-editor-auto-typings": "^0.4.6",
     "nuxt": "^4.2.2",
     "pathe": "^2.0.3",
-    "shiki": "^3.19.0",
-    "vue": "^3.5.25"
+    "shiki": "^3.21.0",
+    "vue": "^3.5.26"
   },
   "devDependencies": {
-    "@iconify-json/ri": "^1.2.6",
+    "@iconify-json/ri": "^1.2.7",
     "@iconify-json/vscode-icons": "^1.2.37",
     "@nuxtjs/plausible": "^2.0.1",
-    "@rolldown/browser": "^1.0.0-beta.53",
-    "@sxzz/eslint-config": "^7.4.1",
+    "@rolldown/browser": "^1.0.0-beta.59",
+    "@sxzz/eslint-config": "^7.4.4",
     "@sxzz/prettier-config": "^2.2.6",
-    "@unocss/eslint-plugin": "^66.5.10",
-    "@unocss/nuxt": "^66.5.10",
-    "@unocss/reset": "^66.5.10",
+    "@unocss/eslint-plugin": "^66.5.12",
+    "@unocss/nuxt": "^66.5.12",
+    "@unocss/reset": "^66.5.12",
     "@vueuse/nuxt": "^14.1.0",
-    "eslint": "^9.39.1",
+    "eslint": "^9.39.2",
     "nuxt-monaco-editor": "^1.4.0",
     "prettier": "^3.7.4",
     "typescript": "^5.9.3",
-    "unocss": "^66.5.10",
-    "vite": "npm:vite@^8.0.0-beta.1",
-    "vue-tsc": "^3.1.8"
+    "unocss": "^66.5.12",
+    "vite": "8.0.0-beta.7",
+    "vue-tsc": "^3.2.2"
   },
   "resolutions": {
-    "vite": "npm:vite@^8.0.0-beta.1"
+    "vite": "8.0.0-beta.7"
   },
   "prettier": "@sxzz/prettier-config"
 }
