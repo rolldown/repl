@@ -62,7 +62,7 @@ ALWAYS run through these validation scenarios after making changes:
   /utils          - Utility functions
   app.vue         - Main application layout
 /server/api       - Nitro API routes
-/public           - Static assets (lightning-down.svg)
+/public           - Static assets (rolldown-bracketless.svg, rolldown-dark.svg, rolldown-light.svg)
 /patches          - pnpm patches (nuxt-monaco-editor.patch)
 nuxt.config.ts    - Nuxt configuration
 package.json      - Dependencies and scripts
