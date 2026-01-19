@@ -72,8 +72,20 @@ function setEntry(name: string) {
       </template>
 
       <template #tab-prefix="{ value }">
+        <div
+          v-if="value.startsWith('tsconfig.') && value.endsWith('.json')"
+          i-vscode-icons:file-type-tsconfig
+          h-3.5
+          title="TypeScript Config"
+        />
+        <img
+          v-else-if="CONFIG_FILES.includes(value)"
+          src="/rolldown-bracketless.svg"
+          h-3.5
+          title="Config File"
+        />
         <button
-          v-if="!CONFIG_FILES.includes(value)"
+          v-else
           title="Toggle Entry"
           p="0.5"
           mr="0.5"
@@ -90,7 +102,6 @@ function setEntry(name: string) {
         >
           <div title="Toggle Entry" i-ph:house-line-duotone />
         </button>
-        <img v-else src="/rolldown-bracketless.svg" h-3.5 title="Config File" />
       </template>
     </Tabs>
   </div>
