@@ -73,10 +73,7 @@ function setEntry(name: string) {
 
       <template #tab-prefix="{ value }">
         <div
-          v-if="
-            value === 'tsconfig.json' ||
-            (value.startsWith('tsconfig.') && value.endsWith('.json'))
-          "
+          v-if="value.startsWith('tsconfig.') && value.endsWith('.json')"
           i-vscode-icons:file-type-tsconfig
           h-3.5
           title="TypeScript Config"
