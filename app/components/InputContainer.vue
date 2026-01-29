@@ -3,6 +3,7 @@ import {
   activeFile,
   CONFIG_FILES,
   configTemplate,
+  currentVersion,
   files,
   TSCONFIG_FILES,
   tsconfigTemplate,
@@ -82,6 +83,7 @@ function setEntry(name: string) {
           :model-value="files.get(value)!.code"
           :model="files.get(value)!.model"
           :uri="files.get(value)!.uri"
+          :rolldown-version="currentVersion"
           input
           h-full
           min-h-0
