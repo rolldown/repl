@@ -66,7 +66,7 @@ function setEntry(name: string) {
 </script>
 
 <template>
-  <div class="input-panel">
+  <div flex="~ col">
     <Tabs
       v-model="activeFile"
       :tabs
@@ -109,6 +109,16 @@ function setEntry(name: string) {
           v-else
           title="Toggle Entry"
           class="entry-toggle"
+          mr0.5
+          flex
+          flex-center
+          rounded-full
+          p0.5
+          text-3.25
+          text-secondary
+          op60
+          transition-all
+          duration-150
           :class="files.get(value)?.isEntry && 'entry-active'"
           @click="setEntry(value)"
         >
@@ -120,24 +130,6 @@ function setEntry(name: string) {
 </template>
 
 <style scoped>
-.input-panel {
-  display: flex;
-  flex-direction: column;
-}
-
-.entry-toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2px;
-  margin-right: 2px;
-  border-radius: 50%;
-  font-size: 13px;
-  opacity: 0.6;
-  color: var(--c-text-secondary);
-  transition: all var(--transition-fast);
-}
-
 .entry-toggle:hover {
   opacity: 0.9;
   background: var(--c-bg-mute);

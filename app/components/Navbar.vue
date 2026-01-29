@@ -90,14 +90,42 @@ async function handleOpenInStackBlitz() {
 </script>
 
 <template>
-  <nav class="navbar">
+  <nav
+    class="navbar"
+    flex="~ wrap"
+    relative
+    z-20
+    items-center
+    justify-between
+    gap2
+    border-b
+    border-base
+    bg-base
+    px3
+    py2
+  >
     <div flex="~ gap3" items-center>
       <img :src="isDark ? '/rolldown-light.svg' : '/rolldown-dark.svg'" h5 />
       <h1 text-base font-600 tracking-tight>Rolldown REPL</h1>
     </div>
 
     <div flex items-center gap0.5>
-      <div v-if="timeCost != null" class="time-badge" title="Time Cost">
+      <div
+        v-if="timeCost != null"
+        class="time-badge"
+        mr1
+        inline-flex
+        items-center
+        gap1
+        rounded-sm
+        bg-mute
+        px2
+        py0.5
+        text-3
+        text-secondary
+        font-mono
+        title="Time Cost"
+      >
         <div i-ri:time-line text-xs />
         <span>{{ timeCost }}ms</span>
       </div>
@@ -106,7 +134,21 @@ async function handleOpenInStackBlitz() {
         <div i-ri:git-commit-line />
       </button>
 
-      <select v-model="currentVersion" class="version-select">
+      <select
+        v-model="currentVersion"
+        class="version-select"
+        mx1
+        max-w-40
+        cursor-pointer
+        border
+        border-base
+        rounded-1.5
+        bg-soft
+        px2
+        py1
+        text-3.25
+        text-base
+      >
         <option
           v-if="currentVersion.startsWith('git@')"
           :value="currentVersion"
@@ -172,43 +214,14 @@ async function handleOpenInStackBlitz() {
 
 <style scoped>
 .navbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.5rem 0.75rem;
-  border-bottom: 1px solid var(--c-border);
-  background: var(--c-bg-base);
   box-shadow: var(--shadow-navbar);
-  position: relative;
-  z-index: 20;
 }
 
 .time-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  padding: 2px 8px;
-  border-radius: var(--radius-sm);
-  background: var(--c-bg-mute);
-  font-size: 12px;
-  font-family: 'DM Mono', ui-monospace, monospace;
-  color: var(--c-text-secondary);
-  margin-right: 4px;
   font-variant-numeric: tabular-nums;
 }
 
 .version-select {
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-md);
-  padding: 4px 8px;
-  margin: 0 4px;
-  font-size: 13px;
-  color: var(--c-text-base);
-  background: var(--c-bg-soft);
-  cursor: pointer;
-  max-width: 160px;
   transition:
     border-color var(--transition-fast),
     box-shadow var(--transition-fast);

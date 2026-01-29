@@ -157,9 +157,20 @@ const sourcemapLinks = computed(() => {
 </script>
 
 <template>
-  <div class="output-panel">
+  <div h-full flex flex-col>
     <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
-    <div v-if="status === 'error'" class="error-output" v-text="errorText" />
+    <div
+      v-if="status === 'error'"
+      class="error-output"
+      m2
+      overflow-auto
+      whitespace-pre
+      rounded-1.5
+      p3
+      text-3.25
+      font-mono
+      v-text="errorText"
+    />
     <Tabs
       v-else-if="status === 'success' || status === 'pending'"
       v-slot="{ value }"
@@ -181,6 +192,13 @@ const sourcemapLinks = computed(() => {
         <a
           v-if="sourcemapLinks[value]"
           class="sourcemap-link"
+          mx3
+          my2
+          inline-flex
+          items-center
+          gap1
+          text-3.25
+          text-secondary
           :href="sourcemapLinks[value]"
           target="_blank"
           rel="noopener"
@@ -193,6 +211,16 @@ const sourcemapLinks = computed(() => {
     <div
       v-if="status === 'success' && data?.warnings?.length"
       class="warnings-output"
+      max-h="50%"
+      overflow-x-auto
+      whitespace-pre
+      border-t
+      border-base
+      px3
+      py2
+      pb4
+      text-3.25
+      font-mono
     >
       {{ ansis.strip(data?.warnings.join('\n') || '') }}
     </div>
@@ -200,38 +228,19 @@ const sourcemapLinks = computed(() => {
 </template>
 
 <style scoped>
-.output-panel {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-}
-
 .error-output {
-  overflow: auto;
-  white-space: pre;
-  font-size: 13px;
-  font-family: 'DM Mono', ui-monospace, monospace;
   color: #dc2626;
-  padding: 12px;
   background: rgba(220, 38, 38, 0.04);
-  border-radius: var(--radius-md);
-  margin: 8px;
   border: 1px solid rgba(220, 38, 38, 0.1);
 }
 
-.dark .error-output {
+:global(.dark) .error-output {
   background: rgba(220, 38, 38, 0.08);
   border-color: rgba(220, 38, 38, 0.15);
   color: #f87171;
 }
 
 .sourcemap-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin: 8px 12px;
-  font-size: 13px;
-  color: var(--c-text-secondary);
   transition: color var(--transition-fast);
 }
 
@@ -245,17 +254,10 @@ const sourcemapLinks = computed(() => {
 }
 
 .warnings-output {
-  overflow-x: auto;
-  max-height: 50%;
-  white-space: pre;
-  padding: 8px 12px 16px;
-  font-size: 13px;
-  font-family: 'DM Mono', ui-monospace, monospace;
   color: #ca8a04;
-  border-top: 1px solid var(--c-border);
 }
 
-.dark .warnings-output {
+:global(.dark) .warnings-output {
   color: #facc15;
 }
 </style>

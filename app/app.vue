@@ -27,9 +27,9 @@ useHeadSafe({
 <template>
   <ClientOnly>
     <Suspense>
-      <main class="app-shell">
+      <main flex="~ col" bg-base text-base lg:h-screen>
         <Navbar />
-        <div class="editor-layout">
+        <div min-h-0 flex flex-1 flex-col lg:flex-row>
           <InputContainer min-w-0 flex-1 />
           <div class="panel-divider" />
           <OutputContainer min-w-0 flex-1 />
@@ -46,32 +46,6 @@ useHeadSafe({
 </template>
 
 <style scoped>
-.app-shell {
-  display: flex;
-  flex-direction: column;
-  background: var(--c-bg-base);
-  color: var(--c-text-base);
-}
-
-@media (min-width: 1024px) {
-  .app-shell {
-    height: 100vh;
-  }
-}
-
-.editor-layout {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-height: 0;
-}
-
-@media (min-width: 1024px) {
-  .editor-layout {
-    flex-direction: row;
-  }
-}
-
 .panel-divider {
   flex-shrink: 0;
 }

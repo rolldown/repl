@@ -132,7 +132,7 @@ function onDragEnd() {
 
 <template>
   <div flex="~ col" gap2>
-    <div class="tabs-bar">
+    <div flex items-center border-b border-base>
       <div
         ref="tabsRef"
         flex
@@ -168,14 +168,21 @@ function onDragEnd() {
             v-if="renamingTab === name"
             ref="rename-input"
             v-model="renameInput"
-            class="tab-rename-input"
+            rounded-none
+            border-none
+            bg-transparent
+            p0
+            text-3.25
+            color-inherit
+            font-inherit
+            outline-none
             style="field-sizing: content"
             spellcheck="false"
             @keydown.enter.prevent="finishRename(name)"
             @keydown.esc.prevent="cancelRename()"
             @blur="finishRename(name)"
           />
-          <span v-else class="tab-label">
+          <span v-else whitespace-nowrap>
             {{ name }}
           </span>
 
@@ -191,7 +198,20 @@ function onDragEnd() {
         </div>
       </div>
 
-      <button v-if="!readonly" class="tab-add" title="New file" @click="addTab">
+      <button
+        v-if="!readonly"
+        class="tab-add"
+        mx1
+        flex
+        flex-center
+        rounded-sm
+        p1
+        text-secondary
+        hover:bg-mute
+        hover:text-base
+        title="New file"
+        @click="addTab"
+      >
         <div i-ri:add-line text-sm />
       </button>
     </div>
@@ -201,18 +221,6 @@ function onDragEnd() {
 </template>
 
 <style scoped>
-.tabs-bar {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--c-border);
-}
-
-.tabs {
-  display: flex;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-}
-
 .tabs::-webkit-scrollbar {
   height: 0;
 }
@@ -257,21 +265,6 @@ function onDragEnd() {
   background: var(--c-accent-soft);
 }
 
-.tab-label {
-  white-space: nowrap;
-}
-
-.tab-rename-input {
-  border: none;
-  background: transparent;
-  padding: 0;
-  font-size: 13px;
-  font-family: inherit;
-  color: inherit;
-  outline: none;
-  border-radius: 0;
-}
-
 .tab-close {
   display: flex;
   align-items: center;
@@ -295,21 +288,8 @@ function onDragEnd() {
 }
 
 .tab-add {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 4px;
-  margin-right: 4px;
-  padding: 4px;
-  border-radius: var(--radius-sm);
-  color: var(--c-text-secondary);
   transition:
     color var(--transition-fast),
     background var(--transition-fast);
-}
-
-.tab-add:hover {
-  background: var(--c-bg-mute);
-  color: var(--c-text-base);
 }
 </style>
