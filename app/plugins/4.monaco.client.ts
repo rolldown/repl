@@ -1,4 +1,5 @@
 import { activeFile, files } from '~/state/bundler'
+import { loadRolldownTypes } from '~/composables/monaco-types'
 
 export default defineNuxtPlugin(async () => {
   const monaco = await useMonaco()
@@ -49,4 +50,7 @@ export default defineNuxtPlugin(async () => {
       return true
     },
   })
+
+  // Load rolldown types from jsdelivr
+  loadRolldownTypes(monaco)
 })
