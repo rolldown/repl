@@ -7,6 +7,12 @@ export default defineNuxtPlugin(async () => {
     allowComments: true,
     enableSchemaRequest: true,
     trailingCommas: 'ignore',
+    schemas: [
+      {
+        uri: 'https://json.schemastore.org/tsconfig',
+        fileMatch: ['tsconfig*.json'],
+      },
+    ],
   })
 
   monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
