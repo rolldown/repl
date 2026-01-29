@@ -1,4 +1,5 @@
 import { activeFile, files } from '~/state/bundler'
+import { rolldownTypeDefs } from '~/utils/rolldown-types'
 
 export default defineNuxtPlugin(async () => {
   const monaco = await useMonaco()
@@ -22,7 +23,8 @@ export default defineNuxtPlugin(async () => {
   })
   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
-  // Add global type definitions
+  // Add global type definitions and rolldown types upfront
+  // monaco-editor-auto-typings will handle other packages dynamically
   monaco.languages.typescript.typescriptDefaults.setExtraLibs([
     {
       content: `declare global {
@@ -30,12 +32,11 @@ export default defineNuxtPlugin(async () => {
       }
       export {}`,
     },
+    {
+      // Provide rolldown type definitions immediately so they're available when the page loads
+      content: rolldownTypeDefs,
+    },
   ])
-
-  // Note: Type definitions for npm packages (including rolldown) are automatically
-  // fetched by monaco-editor-auto-typings which is configured in CodeEditor.vue
-  // It will detect imports like "import type { RolldownOptions } from 'rolldown'"
-  // and automatically fetch the type definitions from jsdelivr CDN
 
   monaco.editor.registerEditorOpener({
     openCodeEditor(_, resource) {
