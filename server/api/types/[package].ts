@@ -5,8 +5,20 @@ export default eventHandler(async (evt) => {
   // Only allow fetching types for specific packages to prevent abuse
   const allowedPackages = ['rolldown']
   if (!allowedPackages.includes(packageName)) {
-    return new Response(`Package ${packageName} is not allowed`, {
-      status: 403,
+    throw createError({
+      statusCode: 403,
+      statusMessage: `Package ${packageName} is not allowed`,
+    })
+  }
+
+  // Validate version format to prevent path traversal
+  if (
+    typeof version === 'string' &&
+    /[./\\]/.test(version.replaceAll(/[0-9.a-z-]/gi, ''))
+  ) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: 'Invalid version format',
     })
   }
 
@@ -21,26 +33,24 @@ export default eventHandler(async (evt) => {
     })
 
     if (!response.ok) {
-      return new Response(
-        `Failed to fetch types for ${packageName}: ${response.statusText}`,
-        {
-          status: response.status,
-        },
-      )
+      throw createError({
+        statusCode: response.status,
+        statusMessage: `Failed to fetch types for ${packageName}: ${response.statusText}`,
+      })
     }
 
     const types = await response.text()
 
-    return new Response(types, {
-      status: 200,
-      headers: {
-        'content-type': 'text/plain; charset=utf-8',
-        'cache-control': 'public, max-age=3600',
-      },
+    setResponseHeaders(evt, {
+      'content-type': 'text/plain; charset=utf-8',
+      'cache-control': 'public, max-age=3600',
     })
+
+    return types
   } catch (error) {
-    return new Response(`Error fetching types: ${error}`, {
-      status: 500,
+    throw createError({
+      statusCode: 500,
+      statusMessage: `Error fetching types: ${error}`,
     })
   }
 })

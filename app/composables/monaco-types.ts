@@ -20,9 +20,10 @@ export async function addPackageTypes(
     const types = await response.text()
 
     // Add the types to Monaco's TypeScript environment
+    // Use the actual package path to match module resolution
     monacoInstance.languages.typescript.typescriptDefaults.addExtraLib(
       types,
-      `file:///node_modules/@types/${packageName}/index.d.ts`,
+      `file:///node_modules/${packageName}/dist/index.d.ts`,
     )
 
     console.info(`Successfully loaded types for ${packageName}`)

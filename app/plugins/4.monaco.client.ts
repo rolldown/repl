@@ -52,5 +52,5 @@ export default defineNuxtPlugin(async () => {
   })
 
   // Load rolldown types from jsdelivr
-  loadRolldownTypes(monaco)
+  await loadRolldownTypes(monaco)
 })
