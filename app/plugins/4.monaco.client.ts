@@ -1,5 +1,5 @@
-import { activeFile, files } from '~/state/bundler'
 import { loadRolldownTypes } from '~/composables/monaco-types'
+import { activeFile, files } from '~/state/bundler'
 
 export default defineNuxtPlugin(async () => {
   const monaco = await useMonaco()

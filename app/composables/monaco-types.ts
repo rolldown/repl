@@ -1,18 +1,14 @@
-import type * as monaco from 'monaco-editor'
-
 /**
  * Fetches and adds type definitions for a package via our proxy API
  */
 export async function addPackageTypes(
-  monacoInstance: typeof monaco,
+  monacoInstance: any,
   packageName: string,
   version: string = 'latest',
 ): Promise<void> {
   try {
     // Fetch types through our proxy API to avoid CORS issues
-    const response = await fetch(
-      `/api/types/${packageName}?version=${version}`,
-    )
+    const response = await fetch(`/api/types/${packageName}?version=${version}`)
 
     if (!response.ok) {
       console.warn(
@@ -29,7 +25,7 @@ export async function addPackageTypes(
       `file:///node_modules/@types/${packageName}/index.d.ts`,
     )
 
-    console.log(`Successfully loaded types for ${packageName}`)
+    console.info(`Successfully loaded types for ${packageName}`)
   } catch (error) {
     console.warn(`Error loading types for ${packageName}:`, error)
   }
@@ -38,8 +34,6 @@ export async function addPackageTypes(
 /**
  * Load types for the rolldown package
  */
-export async function loadRolldownTypes(
-  monacoInstance: typeof monaco,
-): Promise<void> {
+export async function loadRolldownTypes(monacoInstance: any): Promise<void> {
   await addPackageTypes(monacoInstance, 'rolldown', '1.0.0-rc.2')
 }
