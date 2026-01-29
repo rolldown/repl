@@ -28,7 +28,9 @@ export default eventHandler(async (evt) => {
     contentType?.includes('application/javascript') ||
     contentType?.includes('text/javascript') ||
     contentType?.includes('application/node') ||
-    contentType?.includes('application/json')
+    contentType?.includes('application/json') ||
+    contentType?.includes('text/plain') || // Type definition files may come as text/plain
+    contentType?.includes('application/octet-stream') // Some CDNs serve .d.ts files as octet-stream
   if (!allowMine) {
     return new Response(`Unsupported content type: ${contentType}`, {
       status: 400,

@@ -1,4 +1,4 @@
-import { activeFile, files } from '~/state/bundler'
+import { activeFile, currentVersion, files } from '~/state/bundler'
 import { rolldownTypeDefs } from '~/utils/rolldown-types'
 
 export default defineNuxtPlugin(async () => {
@@ -23,19 +23,56 @@ export default defineNuxtPlugin(async () => {
   })
   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
-  // Add rolldown type definitions and global types as ambient declarations
-  // By not specifying filePath, these become ambient type definitions
-  monaco.languages.typescript.typescriptDefaults.setExtraLibs([
-    {
-      content: rolldownTypeDefs,
-    },
+  // Get the current version for fetching type definitions
+  const { data: rolldownVersions } = await useRolldownVersions()
+  let version = currentVersion.value || 'latest'
+  if (version === 'latest') {
+    version = rolldownVersions.value?.latest || 'latest'
+  }
+
+  const extraLibs: Array<{ content: string; filePath?: string }> = [
     {
       content: `declare global {
         interface ImportMeta { input: string }
       }
       export {}`,
     },
-  ])
+  ]
+
+  // Try to fetch rolldown type definitions from esm.sh which provides bundled types
+  // Falls back to hardcoded definitions if fetching fails
+  let typesLoaded = false
+  try {
+    // esm.sh provides a ?target=dts option that bundles all types into one file
+    const response = await fetch(
+      `https://esm.sh/rolldown@${version}?target=dts`,
+    )
+
+    if (response.ok) {
+      const typeContent = await response.text()
+
+      // esm.sh returns a self-contained type definition that we can use directly
+      extraLibs.push({
+        content: typeContent,
+      })
+
+      typesLoaded = true
+      console.info(`Loaded rolldown type definitions from esm.sh (v${version})`)
+    }
+  } catch (error) {
+    console.warn('Failed to load rolldown types from esm.sh:', error)
+  }
+
+  // Fallback to hardcoded type definitions if CDN fetch failed
+  if (!typesLoaded) {
+    extraLibs.push({
+      content: rolldownTypeDefs,
+    })
+    console.info('Using fallback rolldown type definitions')
+  }
+
+  // Apply type definitions to Monaco
+  monaco.languages.typescript.typescriptDefaults.setExtraLibs(extraLibs)
 
   monaco.editor.registerEditorOpener({
     openCodeEditor(_, resource) {
