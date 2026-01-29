@@ -83,6 +83,8 @@ watch(editorElement, (newValue, oldValue) => {
       sourceCache: new LocalStorageCache(),
       fileRootPath: props.model ? monaco.Uri.file('/').path : undefined,
       sourceResolver: resolver,
+      // Share type definitions across all editor instances
+      shareTypes: true,
     })
   }
 })

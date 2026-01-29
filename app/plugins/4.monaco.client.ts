@@ -1,5 +1,4 @@
-import { activeFile, currentVersion, files } from '~/state/bundler'
-import { rolldownTypeDefs } from '~/utils/rolldown-types'
+import { activeFile, files } from '~/state/bundler'
 
 export default defineNuxtPlugin(async () => {
   const monaco = await useMonaco()
@@ -23,58 +22,20 @@ export default defineNuxtPlugin(async () => {
   })
   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
-  // Get the current version for fetching type definitions
-  const { data: rolldownVersions } = await useRolldownVersions()
-  let version = currentVersion.value || 'latest'
-  if (version === 'latest') {
-    version = rolldownVersions.value?.latest || 'latest'
-  }
-
-  const extraLibs: Array<{ content: string; filePath?: string }> = [
+  // Add global type definitions
+  monaco.languages.typescript.typescriptDefaults.setExtraLibs([
     {
       content: `declare global {
         interface ImportMeta { input: string }
       }
       export {}`,
     },
-  ]
+  ])
 
-  // Try to fetch rolldown type definitions from jsdelivr CDN
-  // Falls back to hardcoded definitions if fetching fails
-  let typesLoaded = false
-  try {
-    // Fetch the bundled type definition file from jsdelivr CDN
-    const response = await fetch(
-      `https://cdn.jsdelivr.net/npm/rolldown@${version}/dist/index.d.mts`,
-    )
-
-    if (response.ok) {
-      const typeContent = await response.text()
-
-      // The type file may have relative imports, so we use it as an ambient declaration
-      extraLibs.push({
-        content: typeContent,
-      })
-
-      typesLoaded = true
-      console.info(
-        `Loaded rolldown type definitions from jsdelivr CDN (v${version})`,
-      )
-    }
-  } catch (error) {
-    console.warn('Failed to load rolldown types from jsdelivr CDN:', error)
-  }
-
-  // Fallback to hardcoded type definitions if CDN fetch failed
-  if (!typesLoaded) {
-    extraLibs.push({
-      content: rolldownTypeDefs,
-    })
-    console.info('Using fallback rolldown type definitions')
-  }
-
-  // Apply type definitions to Monaco
-  monaco.languages.typescript.typescriptDefaults.setExtraLibs(extraLibs)
+  // Note: Type definitions for npm packages (including rolldown) are automatically
+  // fetched by monaco-editor-auto-typings which is configured in CodeEditor.vue
+  // It will detect imports like "import type { RolldownOptions } from 'rolldown'"
+  // and automatically fetch the type definitions from jsdelivr CDN
 
   monaco.editor.registerEditorOpener({
     openCodeEditor(_, resource) {
