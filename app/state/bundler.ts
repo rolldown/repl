@@ -6,6 +6,7 @@ export const codeTemplate = 'export const foo = 42'
 export const configTemplate = `import { defineConfig } from 'rolldown'
 
 export default defineConfig({
+  input: import.meta.input, // the files selected by the button on each tab
   // options
 })
 `
