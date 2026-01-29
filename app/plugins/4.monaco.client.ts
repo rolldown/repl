@@ -39,28 +39,30 @@ export default defineNuxtPlugin(async () => {
     },
   ]
 
-  // Try to fetch rolldown type definitions from esm.sh which provides bundled types
+  // Try to fetch rolldown type definitions from jsdelivr CDN
   // Falls back to hardcoded definitions if fetching fails
   let typesLoaded = false
   try {
-    // esm.sh provides a ?target=dts option that bundles all types into one file
+    // Fetch the bundled type definition file from jsdelivr CDN
     const response = await fetch(
-      `https://esm.sh/rolldown@${version}?target=dts`,
+      `https://cdn.jsdelivr.net/npm/rolldown@${version}/dist/index.d.mts`,
     )
 
     if (response.ok) {
       const typeContent = await response.text()
 
-      // esm.sh returns a self-contained type definition that we can use directly
+      // The type file may have relative imports, so we use it as an ambient declaration
       extraLibs.push({
         content: typeContent,
       })
 
       typesLoaded = true
-      console.info(`Loaded rolldown type definitions from esm.sh (v${version})`)
+      console.info(
+        `Loaded rolldown type definitions from jsdelivr CDN (v${version})`,
+      )
     }
   } catch (error) {
-    console.warn('Failed to load rolldown types from esm.sh:', error)
+    console.warn('Failed to load rolldown types from jsdelivr CDN:', error)
   }
 
   // Fallback to hardcoded type definitions if CDN fetch failed
