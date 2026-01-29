@@ -3,13 +3,12 @@ if (import.meta.client) {
 }
 
 export const codeTemplate = 'export const foo = 42'
-export const configTemplate = `import type { RolldownOptions } from 'rolldown'
+export const configTemplate = `import { defineConfig } from 'rolldown'
 
-const config: RolldownOptions = {
-  input: import.meta.input,
-}
-
-export default config
+export default defineConfig({
+  input: import.meta.input, // the files selected by the button on each tab
+  // options
+})
 `
 
 export const DEFAULT_ENTRY = 'index.ts'

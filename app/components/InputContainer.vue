@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { activeFile, CONFIG_FILES, files } from '~/state/bundler'
+import {
+  activeFile,
+  CONFIG_FILES,
+  configTemplate,
+  files,
+} from '~/state/bundler'
 
 const tabs = computed(() => Array.from(files.value.keys()))
 
@@ -8,7 +13,8 @@ function updateCode(name: string, code: string) {
 }
 
 function addTab(name: string) {
-  files.value.set(name, useSourceFile(name, ''))
+  const initialCode = CONFIG_FILES.includes(name) ? configTemplate : ''
+  files.value.set(name, useSourceFile(name, initialCode))
 }
 
 function renameTab(oldName: string, newName: string) {
@@ -16,6 +22,10 @@ function renameTab(oldName: string, newName: string) {
     Array.from(files.value.entries()).map(([key, value]) => {
       if (key === oldName) {
         value.rename(newName)
+        // Apply template if renamed to a config file and currently empty
+        if (CONFIG_FILES.includes(newName) && !value.code.trim()) {
+          value.code = configTemplate
+        }
         return [newName, value]
       }
       return [key, value]
