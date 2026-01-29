@@ -10,9 +10,14 @@ export default defineConfig({
   // options
 })
 `
+export const tsconfigTemplate = `{
+  "compilerOptions": {}
+}
+`
 
 export const DEFAULT_ENTRY = 'index.ts'
 export const CONFIG_FILES = ['rolldown.config.ts', 'rolldown.config.js']
+export const TSCONFIG_FILES = ['tsconfig.json']
 
 export const defaultFiles = () => {
   return new Map([

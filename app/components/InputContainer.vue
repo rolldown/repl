@@ -4,6 +4,8 @@ import {
   CONFIG_FILES,
   configTemplate,
   files,
+  TSCONFIG_FILES,
+  tsconfigTemplate,
 } from '~/state/bundler'
 
 const tabs = computed(() => Array.from(files.value.keys()))
@@ -13,7 +15,12 @@ function updateCode(name: string, code: string) {
 }
 
 function addTab(name: string) {
-  const initialCode = CONFIG_FILES.includes(name) ? configTemplate : ''
+  let initialCode = ''
+  if (CONFIG_FILES.includes(name)) {
+    initialCode = configTemplate
+  } else if (TSCONFIG_FILES.includes(name)) {
+    initialCode = tsconfigTemplate
+  }
   files.value.set(name, useSourceFile(name, initialCode))
 }
 
@@ -25,6 +32,8 @@ function renameTab(oldName: string, newName: string) {
         // Apply template if renamed to a config file and currently empty
         if (CONFIG_FILES.includes(newName) && !value.code.trim()) {
           value.code = configTemplate
+        } else if (TSCONFIG_FILES.includes(newName) && !value.code.trim()) {
+          value.code = tsconfigTemplate
         }
         return [newName, value]
       }
