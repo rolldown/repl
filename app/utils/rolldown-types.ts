@@ -219,5 +219,4 @@ declare module 'rolldown/experimental' {
 
 declare module 'rolldown/plugins' {
   export * from 'rolldown';
-}
-`
+}`
