@@ -4,7 +4,7 @@ import {
   AutoTypings,
   JsDelivrSourceResolver,
   LocalStorageCache,
-} from 'monaco-editor-auto-typings'
+} from 'monaco-editor-auto-typings/custom-editor'
 import type { MonacoLanguage } from '~/composables/source-file'
 
 const modelValue = defineModel<string>({ default: '' })
@@ -14,6 +14,7 @@ const props = withDefaults(
     options?: monaco.editor.IStandaloneEditorConstructionOptions
     model?: monaco.editor.ITextModel
     readonly?: boolean
+    rolldownVersion?: string
   }>(),
   {
     language: () => 'plaintext',
@@ -77,12 +78,21 @@ watch(editorElement, (newValue, oldValue) => {
       filePath = filePath
         .replaceAll('.d.cts.d.ts', '.d.cts')
         .replaceAll('.cjs.d.ts', '.d.cts')
+        .replaceAll('.d.mts.d.ts', '.d.mts')
+        .replaceAll('.mjs.d.ts', '.d.mts')
       return original.call(this, packageName, version, filePath)
     }
     AutoTypings.create(editor, {
       sourceCache: new LocalStorageCache(),
       fileRootPath: props.model ? monaco.Uri.file('/').path : undefined,
       sourceResolver: resolver,
+      preloadPackages: true,
+      versions: props.rolldownVersion
+        ? {
+            rolldown: props.rolldownVersion,
+          }
+        : undefined,
+      monaco,
     })
   }
 })
