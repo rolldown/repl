@@ -23,11 +23,11 @@ export default defineNuxtPlugin(async () => {
   })
   monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
 
-  // Add rolldown type definitions and global types
+  // Add rolldown type definitions and global types as ambient declarations
+  // By not specifying filePath, these become ambient type definitions
   monaco.languages.typescript.typescriptDefaults.setExtraLibs([
     {
       content: rolldownTypeDefs,
-      filePath: 'file:///node_modules/@types/rolldown/index.d.ts',
     },
     {
       content: `declare global {
