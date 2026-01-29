@@ -9,7 +9,7 @@ export default defineNuxtPlugin(async () => {
     trailingCommas: 'ignore',
     schemas: [
       {
-        uri: 'https://json.schemastore.org/tsconfig',
+        uri: 'https://json.schemastore.org/tsconfig.json',
         fileMatch: ['tsconfig*.json'],
       },
     ],
