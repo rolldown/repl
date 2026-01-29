@@ -12,16 +12,21 @@ export default defineConfig({
     'border-bg-base': 'border-$c-bg-base',
 
     'bg-base': 'bg-$c-bg-base',
+    'bg-soft': 'bg-$c-bg-soft',
+    'bg-mute': 'bg-$c-bg-mute',
     'bg-glass': 'bg-white:75 dark:bg-#111:75 backdrop-blur-5',
 
     'text-base': 'text-$c-text-base',
+    'text-secondary': 'text-$c-text-secondary',
 
     'flex-center': 'items-center justify-center',
     'flex-x-center': 'justify-center',
     'flex-y-center': 'items-center',
 
     'nav-button':
-      'flex flex-center rounded-lg p1.5 hover:bg-gray hover:bg-opacity-20',
+      'flex flex-center rounded-md p1.5 text-$c-text-secondary hover:text-$c-text-base hover:bg-$c-bg-mute active:scale-95 transition-all duration-150',
+
+    'nav-divider': 'w-px h-5 bg-$c-border mx1',
 
     'z-panel': 'z-10',
   },

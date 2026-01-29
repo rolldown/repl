@@ -66,7 +66,7 @@ function setEntry(name: string) {
 </script>
 
 <template>
-  <div flex="~ col" pl3>
+  <div class="input-panel">
     <Tabs
       v-model="activeFile"
       :tabs
@@ -108,17 +108,8 @@ function setEntry(name: string) {
         <button
           v-else
           title="Toggle Entry"
-          p="0.5"
-          mr="0.5"
-          rounded-full
-          text-sm
-          op80
-          hover:bg-op-60
-          :class="
-            files.get(value)?.isEntry
-              ? 'bg-#d44803 text-white bg-op-90'
-              : 'bg-gray bg-op-0'
-          "
+          class="entry-toggle"
+          :class="files.get(value)?.isEntry && 'entry-active'"
           @click="setEntry(value)"
         >
           <div title="Toggle Entry" i-ph:house-line-duotone />
@@ -127,3 +118,38 @@ function setEntry(name: string) {
     </Tabs>
   </div>
 </template>
+
+<style scoped>
+.input-panel {
+  display: flex;
+  flex-direction: column;
+}
+
+.entry-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  margin-right: 2px;
+  border-radius: 50%;
+  font-size: 13px;
+  opacity: 0.6;
+  color: var(--c-text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.entry-toggle:hover {
+  opacity: 0.9;
+  background: var(--c-bg-mute);
+}
+
+.entry-toggle.entry-active {
+  background: var(--c-accent);
+  color: white;
+  opacity: 0.95;
+}
+
+.entry-toggle.entry-active:hover {
+  opacity: 1;
+}
+</style>

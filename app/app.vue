@@ -27,10 +27,11 @@ useHeadSafe({
 <template>
   <ClientOnly>
     <Suspense>
-      <main flex="~ col" lg:h-screen>
+      <main class="app-shell">
         <Navbar />
-        <div min-h-0 flex flex-1 flex-col gap4 lg:flex-row>
+        <div class="editor-layout">
           <InputContainer min-w-0 flex-1 />
+          <div class="panel-divider" />
           <OutputContainer min-w-0 flex-1 />
         </div>
       </main>
@@ -43,3 +44,49 @@ useHeadSafe({
     </Suspense>
   </ClientOnly>
 </template>
+
+<style scoped>
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  background: var(--c-bg-base);
+  color: var(--c-text-base);
+}
+
+@media (min-width: 1024px) {
+  .app-shell {
+    height: 100vh;
+  }
+}
+
+.editor-layout {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+@media (min-width: 1024px) {
+  .editor-layout {
+    flex-direction: row;
+  }
+}
+
+.panel-divider {
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .panel-divider {
+    width: 1px;
+    background: var(--c-border);
+  }
+}
+
+@media (max-width: 1023px) {
+  .panel-divider {
+    height: 1px;
+    background: var(--c-border);
+  }
+}
+</style>

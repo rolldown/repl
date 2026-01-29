@@ -157,17 +157,9 @@ const sourcemapLinks = computed(() => {
 </script>
 
 <template>
-  <div h-full flex flex-col gap2>
+  <div class="output-panel">
     <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
-    <div
-      v-if="status === 'error'"
-      overflow-auto
-      whitespace-pre
-      text-sm
-      text-red
-      font-mono
-      v-text="errorText"
-    />
+    <div v-if="status === 'error'" class="error-output" v-text="errorText" />
     <Tabs
       v-else-if="status === 'success' || status === 'pending'"
       v-slot="{ value }"
@@ -188,34 +180,82 @@ const sourcemapLinks = computed(() => {
         />
         <a
           v-if="sourcemapLinks[value]"
-          class="m-2 flex items-center self-start text-sm opacity-80"
+          class="sourcemap-link"
           :href="sourcemapLinks[value]"
           target="_blank"
           rel="noopener"
         >
-          <span
-            class="text-[#3c3c43] font-medium dark:text-[#fffff5]/[.86] hover:text-[#3451b2] dark:hover:text-[#a8b1ff]"
-          >
-            Visualize source map
-          </span>
-          <div
-            class="i-ri:arrow-right-up-line ml-1 h-3 w-3 text-[#3c3c43]/[.56] dark:text-[#fffff5]/[.6]"
-          />
+          <span>Visualize source map</span>
+          <div i-ri:arrow-right-up-line />
         </a>
       </div>
     </Tabs>
     <div
       v-if="status === 'success' && data?.warnings?.length"
-      overflow-x-auto
-      max-h="50%"
-      whitespace-pre
-      pb4
-      text-sm
-      text-yellow-600
-      font-mono
-      dark:text-yellow
+      class="warnings-output"
     >
       {{ ansis.strip(data?.warnings.join('\n') || '') }}
     </div>
   </div>
 </template>
+
+<style scoped>
+.output-panel {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.error-output {
+  overflow: auto;
+  white-space: pre;
+  font-size: 13px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  color: #dc2626;
+  padding: 12px;
+  background: rgba(220, 38, 38, 0.04);
+  border-radius: var(--radius-md);
+  margin: 8px;
+  border: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+.dark .error-output {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+}
+
+.sourcemap-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 8px 12px;
+  font-size: 13px;
+  color: var(--c-text-secondary);
+  transition: color var(--transition-fast);
+}
+
+.sourcemap-link:hover {
+  color: var(--c-accent);
+}
+
+.sourcemap-link div {
+  width: 14px;
+  height: 14px;
+}
+
+.warnings-output {
+  overflow-x: auto;
+  max-height: 50%;
+  white-space: pre;
+  padding: 8px 12px 16px;
+  font-size: 13px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  color: #ca8a04;
+  border-top: 1px solid var(--c-border);
+}
+
+.dark .warnings-output {
+  color: #facc15;
+}
+</style>

@@ -90,24 +90,15 @@ async function handleOpenInStackBlitz() {
 </script>
 
 <template>
-  <div flex="~ wrap" items-center justify-between gap2 px2 py2>
-    <div flex="~ gap3" ml1 items-center>
+  <nav class="navbar">
+    <div flex="~ gap3" items-center>
       <img :src="isDark ? '/rolldown-light.svg' : '/rolldown-dark.svg'" h5 />
-      <h1 mr4 text-lg font-semibold>Rolldown REPL</h1>
+      <h1 text-base font-600 tracking-tight>Rolldown REPL</h1>
     </div>
 
-    <div flex="~ center" gap1>
-      <div
-        v-if="timeCost != null"
-        flex
-        items-center
-        gap1
-        text-sm
-        font-mono
-        op60
-        title="Time Cost"
-      >
-        <div i-ri:time-line />
+    <div flex items-center gap0.5>
+      <div v-if="timeCost != null" class="time-badge" title="Time Cost">
+        <div i-ri:time-line text-xs />
         <span>{{ timeCost }}ms</span>
       </div>
 
@@ -115,12 +106,12 @@ async function handleOpenInStackBlitz() {
         <div i-ri:git-commit-line />
       </button>
 
-      <select v-model="currentVersion" border rounded p1 text-sm>
+      <select v-model="currentVersion" class="version-select">
         <option
           v-if="currentVersion.startsWith('git@')"
           :value="currentVersion"
         >
-          pkg.pr.new: {{ currentVersion.slice(4) }}
+          {{ currentVersion.slice(4) }}
         </option>
         <option value="latest">Latest</option>
         <option
@@ -135,6 +126,8 @@ async function handleOpenInStackBlitz() {
       <button title="Reset State" nav-button @click="resetState">
         <div i-ri:refresh-line />
       </button>
+
+      <div nav-divider />
 
       <button
         title="Open in StackBlitz"
@@ -151,6 +144,8 @@ async function handleOpenInStackBlitz() {
       >
         <div i-ri:download-line />
       </button>
+
+      <div nav-divider />
 
       <button title="Toggle Dark Mode" nav-button @click="toggleDark">
         <div i-ri:sun-line dark:i-ri:moon-line />
@@ -172,5 +167,60 @@ async function handleOpenInStackBlitz() {
         <div i-ri:github-line />
       </a>
     </div>
-  </div>
+  </nav>
 </template>
+
+<style scoped>
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--c-border);
+  background: var(--c-bg-base);
+  box-shadow: var(--shadow-navbar);
+  position: relative;
+  z-index: 20;
+}
+
+.time-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  background: var(--c-bg-mute);
+  font-size: 12px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  color: var(--c-text-secondary);
+  margin-right: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.version-select {
+  border: 1px solid var(--c-border);
+  border-radius: var(--radius-md);
+  padding: 4px 8px;
+  margin: 0 4px;
+  font-size: 13px;
+  color: var(--c-text-base);
+  background: var(--c-bg-soft);
+  cursor: pointer;
+  max-width: 160px;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.version-select:hover {
+  border-color: var(--c-accent);
+}
+
+.version-select:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px var(--c-accent-soft);
+}
+</style>
