@@ -13,6 +13,8 @@ import { npmVfsFiles, userDependencies } from '~/state/npm'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
+const loadingPhase = ref<'loading' | 'bundling' | null>(null)
+
 const { data, status, error, refresh } = useAsyncData(
   'output',
   async (): Promise<TransformResult | undefined> => {
@@ -22,6 +24,8 @@ const { data, status, error, refresh } = useAsyncData(
     if (version === 'latest') {
       version = rolldownVersions.value?.latest || 'latest'
     }
+
+    loadingPhase.value = 'loading'
 
     const [core, experimental, plugins, binding] = await Promise.all([
       import(
@@ -37,6 +41,8 @@ const { data, status, error, refresh } = useAsyncData(
         /* @vite-ignore */ `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`
       ),
     ])
+
+    loadingPhase.value = 'bundling'
 
     binding.__volume.reset()
     const inputFileJSON: Record<string, string> = {}
@@ -103,6 +109,7 @@ const { data, status, error, refresh } = useAsyncData(
       const result = await build(core, entries.value, configObject)
       return result
     } finally {
+      loadingPhase.value = null
       timeCost.value = Math.round(performance.now() - startTime)
     }
   },
@@ -189,7 +196,10 @@ const sourcemapLinks = computed(() => {
 
 <template>
   <div h-full flex flex-col>
-    <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
+    <Loading
+      v-if="isLoading && isLoadingDebounced"
+      :text="loadingPhase === 'bundling' ? 'Bundling' : 'Loading Rolldown'"
+    />
     <div
       v-if="status === 'error'"
       class="error-output"
