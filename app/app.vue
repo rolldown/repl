@@ -27,10 +27,11 @@ useHeadSafe({
 <template>
   <ClientOnly>
     <Suspense>
-      <main flex="~ col" lg:h-screen>
+      <main flex="~ col" bg-base text-base lg:h-screen>
         <Navbar />
-        <div min-h-0 flex flex-1 flex-col gap4 lg:flex-row>
+        <div min-h-0 flex flex-1 flex-col lg:flex-row>
           <InputContainer min-w-0 flex-1 />
+          <div class="panel-divider" />
           <OutputContainer min-w-0 flex-1 />
         </div>
       </main>
@@ -43,3 +44,23 @@ useHeadSafe({
     </Suspense>
   </ClientOnly>
 </template>
+
+<style scoped>
+.panel-divider {
+  flex-shrink: 0;
+}
+
+@media (min-width: 1024px) {
+  .panel-divider {
+    width: 1px;
+    background: var(--c-border);
+  }
+}
+
+@media (max-width: 1023px) {
+  .panel-divider {
+    height: 1px;
+    background: var(--c-border);
+  }
+}
+</style>

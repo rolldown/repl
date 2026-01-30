@@ -132,7 +132,7 @@ function onDragEnd() {
 
 <template>
   <div flex="~ col" gap2>
-    <div flex items-center>
+    <div flex items-center border-b border-base>
       <div
         ref="tabsRef"
         flex
@@ -144,22 +144,15 @@ function onDragEnd() {
         <div
           v-for="(name, index) of tabs"
           :key="name"
-          border-b="~ 2"
+          class="tab-item"
           group
-          flex
-          cursor-pointer
-          items-center
-          gap1
-          rounded-t
-          py1
-          pl2
           :draggable="!readonly"
           :class="[
-            active === name && 'border-b-blue-500',
-            renamingTab === name && 'bg-gray:10',
+            active === name && 'tab-active',
+            renamingTab === name && 'tab-renaming',
             readonly && 'pr2',
-            draggingIndex === index && 'opacity-50',
-            dragOverIndex === index && 'bg-blue-500:20',
+            draggingIndex === index && 'tab-dragging',
+            dragOverIndex === index && 'tab-dragover',
           ]"
           @click="active = name"
           @dblclick="!readonly && startRename(name)"
@@ -175,56 +168,51 @@ function onDragEnd() {
             v-if="renamingTab === name"
             ref="rename-input"
             v-model="renameInput"
-            style="field-sizing: content"
             rounded-none
             border-none
             bg-transparent
             p0
-            text-sm
-            font-mono
+            text-3.25
+            color-inherit
+            font-inherit
             outline-none
+            style="field-sizing: content"
             spellcheck="false"
             @keydown.enter.prevent="finishRename(name)"
             @keydown.esc.prevent="cancelRename()"
             @blur="finishRename(name)"
           />
-          <span
-            v-else
-            :class="active === name ? 'text-blue-500' : 'op70'"
-            whitespace-nowrap
-            text-sm
-            font-mono
-          >
+          <span v-else whitespace-nowrap>
             {{ name }}
           </span>
 
           <button
             v-if="!readonly && tabs.length > 1"
             title="Remove"
-            p="0.5"
-            :class="active === name && 'op60'"
-            rounded-md
-            op0
-            transition-300
-            transition-opacity
-            hover:bg-gray:30
-            group-hover:opacity-60
+            class="tab-close"
+            :class="active === name && 'active-close'"
             @click.stop="removeTab(name)"
           >
-            <div i-ri:close-line />
+            <div i-ri:close-line text-3 />
           </button>
         </div>
       </div>
 
       <button
         v-if="!readonly"
-        ml3
-        rounded-lg
+        class="tab-add"
+        mx1
+        flex
+        flex-center
+        rounded-sm
         p1
-        hover:bg-gray:30
+        text-secondary
+        hover:bg-mute
+        hover:text-base
+        title="New file"
         @click="addTab"
       >
-        <div i-ri:add-fill text-lg />
+        <div i-ri:add-line text-sm />
       </button>
     </div>
 
@@ -232,16 +220,76 @@ function onDragEnd() {
   </div>
 </template>
 
-<style>
+<style scoped>
 .tabs::-webkit-scrollbar {
-  height: 2px;
+  height: 0;
 }
 
-.tabs::-webkit-scrollbar-track {
-  background-color: var(--c-border);
+.tab-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 10px;
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+  font-size: 13px;
+  font-family: 'DM Mono', ui-monospace, monospace;
+  color: var(--c-text-secondary);
+  border-bottom: 2px solid transparent;
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast),
+    border-color var(--transition-fast);
 }
 
-.tabs::-webkit-scrollbar-thumb {
-  --at-apply: 'bg-blue-500';
+.tab-item:hover {
+  color: var(--c-text-base);
+  background: var(--c-bg-mute);
+}
+
+.tab-item.tab-active {
+  color: var(--c-accent);
+  border-bottom-color: var(--c-accent);
+}
+
+.tab-item.tab-renaming {
+  background: var(--c-bg-mute);
+}
+
+.tab-item.tab-dragging {
+  opacity: 0.4;
+}
+
+.tab-item.tab-dragover {
+  background: var(--c-accent-soft);
+}
+
+.tab-close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2px;
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  transition:
+    opacity var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.tab-item:hover .tab-close,
+.tab-close.active-close {
+  opacity: 0.5;
+}
+
+.tab-close:hover {
+  opacity: 1 !important;
+  background: var(--c-bg-mute);
+}
+
+.tab-add {
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
 }
 </style>

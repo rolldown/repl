@@ -157,14 +157,17 @@ const sourcemapLinks = computed(() => {
 </script>
 
 <template>
-  <div h-full flex flex-col gap2>
+  <div h-full flex flex-col>
     <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
     <div
       v-if="status === 'error'"
+      class="error-output"
+      m2
       overflow-auto
       whitespace-pre
-      text-sm
-      text-red
+      rounded-1.5
+      p3
+      text-3.25
       font-mono
       v-text="errorText"
     />
@@ -188,34 +191,73 @@ const sourcemapLinks = computed(() => {
         />
         <a
           v-if="sourcemapLinks[value]"
-          class="m-2 flex items-center self-start text-sm opacity-80"
+          class="sourcemap-link"
+          mx3
+          my2
+          inline-flex
+          items-center
+          gap1
+          text-3.25
+          text-secondary
           :href="sourcemapLinks[value]"
           target="_blank"
           rel="noopener"
         >
-          <span
-            class="text-[#3c3c43] font-medium dark:text-[#fffff5]/[.86] hover:text-[#3451b2] dark:hover:text-[#a8b1ff]"
-          >
-            Visualize source map
-          </span>
-          <div
-            class="i-ri:arrow-right-up-line ml-1 h-3 w-3 text-[#3c3c43]/[.56] dark:text-[#fffff5]/[.6]"
-          />
+          <span>Visualize source map</span>
+          <div i-ri:arrow-right-up-line />
         </a>
       </div>
     </Tabs>
     <div
       v-if="status === 'success' && data?.warnings?.length"
-      overflow-x-auto
+      class="warnings-output"
       max-h="50%"
+      overflow-x-auto
       whitespace-pre
+      border-t
+      border-base
+      px3
+      py2
       pb4
-      text-sm
-      text-yellow-600
+      text-3.25
       font-mono
-      dark:text-yellow
     >
       {{ ansis.strip(data?.warnings.join('\n') || '') }}
     </div>
   </div>
 </template>
+
+<style scoped>
+.error-output {
+  color: #dc2626;
+  background: rgba(220, 38, 38, 0.04);
+  border: 1px solid rgba(220, 38, 38, 0.1);
+}
+
+:global(.dark) .error-output {
+  background: rgba(220, 38, 38, 0.08);
+  border-color: rgba(220, 38, 38, 0.15);
+  color: #f87171;
+}
+
+.sourcemap-link {
+  transition: color var(--transition-fast);
+}
+
+.sourcemap-link:hover {
+  color: var(--c-accent);
+}
+
+.sourcemap-link div {
+  width: 14px;
+  height: 14px;
+}
+
+.warnings-output {
+  color: #ca8a04;
+}
+
+:global(.dark) .warnings-output {
+  color: #facc15;
+}
+</style>

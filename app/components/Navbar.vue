@@ -90,24 +90,43 @@ async function handleOpenInStackBlitz() {
 </script>
 
 <template>
-  <div flex="~ wrap" items-center justify-between gap2 px2 py2>
-    <div flex="~ gap3" ml1 items-center>
+  <nav
+    class="navbar"
+    flex="~ wrap"
+    relative
+    z-20
+    items-center
+    justify-between
+    gap2
+    border-b
+    border-base
+    bg-base
+    px3
+    py2
+  >
+    <div flex="~ gap3" items-center>
       <img :src="isDark ? '/rolldown-light.svg' : '/rolldown-dark.svg'" h5 />
-      <h1 mr4 text-lg font-semibold>Rolldown REPL</h1>
+      <h1 text-base font-600 tracking-tight>Rolldown REPL</h1>
     </div>
 
-    <div flex="~ center" gap1>
+    <div flex items-center gap0.5>
       <div
         v-if="timeCost != null"
-        flex
+        class="time-badge"
+        mr1
+        inline-flex
         items-center
         gap1
-        text-sm
+        rounded-sm
+        bg-mute
+        px2
+        py0.5
+        text-3
+        text-secondary
         font-mono
-        op60
         title="Time Cost"
       >
-        <div i-ri:time-line />
+        <div i-ri:time-line text-xs />
         <span>{{ timeCost }}ms</span>
       </div>
 
@@ -115,12 +134,26 @@ async function handleOpenInStackBlitz() {
         <div i-ri:git-commit-line />
       </button>
 
-      <select v-model="currentVersion" border rounded p1 text-sm>
+      <select
+        v-model="currentVersion"
+        class="version-select"
+        mx1
+        max-w-40
+        cursor-pointer
+        border
+        border-base
+        rounded-1.5
+        bg-soft
+        px2
+        py1
+        text-3.25
+        text-base
+      >
         <option
           v-if="currentVersion.startsWith('git@')"
           :value="currentVersion"
         >
-          pkg.pr.new: {{ currentVersion.slice(4) }}
+          {{ currentVersion.slice(4) }}
         </option>
         <option value="latest">Latest</option>
         <option
@@ -135,6 +168,8 @@ async function handleOpenInStackBlitz() {
       <button title="Reset State" nav-button @click="resetState">
         <div i-ri:refresh-line />
       </button>
+
+      <div nav-divider />
 
       <button
         title="Open in StackBlitz"
@@ -151,6 +186,8 @@ async function handleOpenInStackBlitz() {
       >
         <div i-ri:download-line />
       </button>
+
+      <div nav-divider />
 
       <button title="Toggle Dark Mode" nav-button @click="toggleDark">
         <div i-ri:sun-line dark:i-ri:moon-line />
@@ -172,5 +209,31 @@ async function handleOpenInStackBlitz() {
         <div i-ri:github-line />
       </a>
     </div>
-  </div>
+  </nav>
 </template>
+
+<style scoped>
+.navbar {
+  box-shadow: var(--shadow-navbar);
+}
+
+.time-badge {
+  font-variant-numeric: tabular-nums;
+}
+
+.version-select {
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+.version-select:hover {
+  border-color: var(--c-accent);
+}
+
+.version-select:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px var(--c-accent-soft);
+}
+</style>

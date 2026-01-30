@@ -1,4 +1,52 @@
+html {
+  font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 html.dark {
   color-scheme: dark;
   background-color: var(--c-bg-base);
+}
+
+::selection {
+  background-color: var(--c-accent-soft);
+  color: var(--c-accent);
+}
+
+.dark ::selection {
+  background-color: rgba(232, 96, 28, 0.25);
+}
+
+select {
+  background-color: var(--c-bg-soft);
+  transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+select:focus {
+  outline: none;
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 2px var(--c-accent-soft);
+}
+
+button {
+  transition: background-color var(--transition-fast), opacity var(--transition-fast);
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--c-border);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--c-text-secondary);
 }
