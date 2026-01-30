@@ -31,6 +31,9 @@ importers:
       fflate:
         specifier: ^0.8.2
         version: 0.8.2
+      modern-tar:
+        specifier: ^0.7.3
+        version: 0.7.3
       monaco-editor:
         specifier: ^0.55.1
         version: 0.55.1
@@ -3597,6 +3600,10 @@ packages:
 
   mocked-exports@0.1.1:
     resolution: {integrity: sha512-aF7yRQr/Q0O2/4pIXm6PZ5G+jAd7QS4Yu8m+WEeEHGnbo+7mE36CbLSDQiXYV8bVL3NfmdeqPJct0tUlnjVSnA==}
+
+  modern-tar@0.7.3:
+    resolution: {integrity: sha512-4W79zekKGyYU4JXVmB78DOscMFaJth2gGhgfTl2alWE4rNe3nf4N2pqenQ0rEtIewrnD79M687Ouba3YGTLOvg==}
+    engines: {node: '>=18.0.0'}
 
   monaco-editor-auto-typings@0.4.6:
     resolution: {integrity: sha512-yN6yP2oQJkpyZtUyi5qT9AjZLILrTZWOFny7Km2yNiPMPqOWq/znkTS4b5Yk1sHumSaLJUw5m1EPKiopRqtEpA==}
@@ -8882,6 +8889,8 @@ snapshots:
       ufo: 1.6.2
 
   mocked-exports@0.1.1: {}
+
+  modern-tar@0.7.3: {}
 
   monaco-editor-auto-typings@0.4.6(monaco-editor@0.55.1):
     dependencies:
