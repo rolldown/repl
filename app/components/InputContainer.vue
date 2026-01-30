@@ -5,6 +5,8 @@ import {
   configTemplate,
   currentVersion,
   files,
+  PACKAGE_JSON_FILES,
+  packageJsonTemplate,
   TSCONFIG_FILES,
   tsconfigTemplate,
 } from '~/state/bundler'
@@ -21,6 +23,8 @@ function addTab(name: string) {
     initialCode = configTemplate
   } else if (TSCONFIG_FILES.includes(name)) {
     initialCode = tsconfigTemplate
+  } else if (PACKAGE_JSON_FILES.includes(name)) {
+    initialCode = packageJsonTemplate
   }
   files.value.set(name, useSourceFile(name, initialCode))
 }
@@ -35,6 +39,8 @@ function renameTab(oldName: string, newName: string) {
           value.code = configTemplate
         } else if (TSCONFIG_FILES.includes(newName) && !value.code.trim()) {
           value.code = tsconfigTemplate
+        } else if (PACKAGE_JSON_FILES.includes(newName) && !value.code.trim()) {
+          value.code = packageJsonTemplate
         }
         return [newName, value]
       }
@@ -94,7 +100,13 @@ function setEntry(name: string) {
 
       <template #tab-prefix="{ value }">
         <div
-          v-if="value.startsWith('tsconfig.') && value.endsWith('.json')"
+          v-if="value === 'package.json'"
+          i-vscode-icons:file-type-node
+          h-3.5
+          title="Package JSON"
+        />
+        <div
+          v-else-if="value.startsWith('tsconfig.') && value.endsWith('.json')"
           i-vscode-icons:file-type-tsconfig
           h-3.5
           title="TypeScript Config"

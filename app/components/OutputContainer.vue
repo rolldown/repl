@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ansis from 'ansis'
 import { build } from '~/composables/bundler'
+import { installDependencies } from '~/composables/npm'
 import {
   CONFIG_FILES,
   currentVersion,
@@ -8,8 +9,11 @@ import {
   files,
   timeCost,
 } from '~/state/bundler'
+import { npmVfsFiles, userDependencies } from '~/state/npm'
 
 const { data: rolldownVersions } = await useRolldownVersions()
+
+const loadingPhase = ref<'loading' | 'bundling' | null>(null)
 
 const { data, status, error, refresh } = useAsyncData(
   'output',
@@ -20,6 +24,8 @@ const { data, status, error, refresh } = useAsyncData(
     if (version === 'latest') {
       version = rolldownVersions.value?.latest || 'latest'
     }
+
+    loadingPhase.value = 'loading'
 
     const [core, experimental, plugins, binding] = await Promise.all([
       import(
@@ -36,11 +42,16 @@ const { data, status, error, refresh } = useAsyncData(
       ),
     ])
 
+    loadingPhase.value = 'bundling'
+
     binding.__volume.reset()
     const inputFileJSON: Record<string, string> = {}
     for (const file of files.value.values()) {
       inputFileJSON[file.filename] = file.code
     }
+
+    Object.assign(inputFileJSON, npmVfsFiles.value)
+
     binding.__volume.fromJSON(inputFileJSON)
 
     let configObject: any = {}
@@ -98,15 +109,41 @@ const { data, status, error, refresh } = useAsyncData(
       const result = await build(core, entries.value, configObject)
       return result
     } finally {
+      loadingPhase.value = null
       timeCost.value = Math.round(performance.now() - startTime)
     }
   },
   { server: false, deep: false },
 )
 
-watch([files, currentVersion], () => refresh(), {
-  deep: true,
-})
+let npmAbort: AbortController | null = null
+watch(
+  userDependencies,
+  async (deps) => {
+    npmAbort?.abort()
+    const ctrl = (npmAbort = new AbortController())
+
+    if (Object.keys(deps).length === 0) {
+      if (Object.keys(npmVfsFiles.value).length === 0) return
+      npmVfsFiles.value = {}
+      refresh()
+      return
+    }
+
+    try {
+      const { vfsFiles } = await installDependencies(deps)
+      if (ctrl.signal.aborted) return
+      npmVfsFiles.value = vfsFiles
+      refresh()
+    } catch {
+      if (ctrl.signal.aborted) return
+      npmVfsFiles.value = {}
+    }
+  },
+  { immediate: true },
+)
+
+watch([files, currentVersion], () => refresh(), { deep: true })
 
 const isLoading = computed(() => status.value === 'pending')
 const isLoadingDebounced = useDebounce(isLoading, 100)
@@ -159,7 +196,10 @@ const sourcemapLinks = computed(() => {
 
 <template>
   <div h-full flex flex-col>
-    <Loading v-if="isLoading && isLoadingDebounced" text="Bundling" />
+    <Loading
+      v-if="isLoading && isLoadingDebounced"
+      :text="loadingPhase === 'bundling' ? 'Bundling' : 'Loading Rolldown'"
+    />
     <div
       v-if="status === 'error'"
       class="error-output"

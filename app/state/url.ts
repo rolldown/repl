@@ -36,7 +36,7 @@ export function initUrlState() {
   watchEffect(() => {
     const f = Object.fromEntries(files.value)
     const serialized = JSON.stringify({ f, v: currentVersion.value })
-    location.hash = utoa(serialized)
+    history.replaceState(null, '', `#${utoa(serialized)}`)
     localStorage.setItem(LAST_STATE_KEY, serialized)
   })
 }

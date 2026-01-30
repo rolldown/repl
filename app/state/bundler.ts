@@ -18,11 +18,21 @@ export const tsconfigTemplate = `{
 export const DEFAULT_ENTRY = 'index.ts'
 export const CONFIG_FILES = ['rolldown.config.ts', 'rolldown.config.js']
 export const TSCONFIG_FILES = ['tsconfig.json']
+export const PACKAGE_JSON_FILES = ['package.json']
+
+export const packageJsonTemplate = `{
+  "dependencies": {}
+}
+`
 
 export const defaultFiles = () => {
   return new Map([
     [DEFAULT_ENTRY, useSourceFile(DEFAULT_ENTRY, codeTemplate, true)],
     [CONFIG_FILES[0]!, useSourceFile(CONFIG_FILES[0]!, configTemplate)],
+    [
+      PACKAGE_JSON_FILES[0]!,
+      useSourceFile(PACKAGE_JSON_FILES[0]!, packageJsonTemplate),
+    ],
   ])
 }
 
