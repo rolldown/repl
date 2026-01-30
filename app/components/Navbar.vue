@@ -110,6 +110,8 @@ async function handleOpenInStackBlitz() {
     </div>
 
     <div flex items-center gap0.5>
+      <NpmStatus />
+
       <div
         v-if="timeCost != null"
         class="time-badge"

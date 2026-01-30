@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ansis from 'ansis'
 import { build } from '~/composables/bundler'
+import { installDependencies } from '~/composables/npm'
 import {
   CONFIG_FILES,
   currentVersion,
@@ -8,6 +9,7 @@ import {
   files,
   timeCost,
 } from '~/state/bundler'
+import { npmVfsFiles, userDependencies } from '~/state/npm'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -41,6 +43,9 @@ const { data, status, error, refresh } = useAsyncData(
     for (const file of files.value.values()) {
       inputFileJSON[file.filename] = file.code
     }
+
+    Object.assign(inputFileJSON, npmVfsFiles.value)
+
     binding.__volume.fromJSON(inputFileJSON)
 
     let configObject: any = {}
@@ -104,9 +109,34 @@ const { data, status, error, refresh } = useAsyncData(
   { server: false, deep: false },
 )
 
-watch([files, currentVersion], () => refresh(), {
-  deep: true,
-})
+let npmAbort: AbortController | null = null
+watch(
+  userDependencies,
+  async (deps) => {
+    npmAbort?.abort()
+    const ctrl = (npmAbort = new AbortController())
+
+    if (Object.keys(deps).length === 0) {
+      if (Object.keys(npmVfsFiles.value).length === 0) return
+      npmVfsFiles.value = {}
+      refresh()
+      return
+    }
+
+    try {
+      const { vfsFiles } = await installDependencies(deps)
+      if (ctrl.signal.aborted) return
+      npmVfsFiles.value = vfsFiles
+      refresh()
+    } catch {
+      if (ctrl.signal.aborted) return
+      npmVfsFiles.value = {}
+    }
+  },
+  { immediate: true },
+)
+
+watch([files, currentVersion], () => refresh(), { deep: true })
 
 const isLoading = computed(() => status.value === 'pending')
 const isLoadingDebounced = useDebounce(isLoading, 100)
