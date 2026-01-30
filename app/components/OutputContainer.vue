@@ -112,6 +112,7 @@ const isLoading = computed(() => status.value === 'pending')
 const isLoadingDebounced = useDebounce(isLoading, 100)
 
 const tabs = computed(() => Object.keys(data.value?.output || {}))
+const activeOutputTab = ref<string>()
 
 const errorText = computed(() => {
   if (!error.value) return ''
@@ -174,6 +175,7 @@ const sourcemapLinks = computed(() => {
     <Tabs
       v-else-if="status === 'success' || status === 'pending'"
       v-slot="{ value }"
+      v-model="activeOutputTab"
       :tabs
       readonly
       min-h-0
