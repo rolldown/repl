@@ -100,8 +100,8 @@ export async function build(
       if (!moduleMap.has(moduleId)) {
         moduleMap.set(moduleId, {
           id: moduleId,
-          // Note: Rolldown's current output doesn't expose per-module import/importer relationships
-          // These would need to be populated from the module graph API if/when available
+          // TODO: Populate import/importer relationships when Rolldown exposes module graph API
+          // Currently, Rolldown's browser output doesn't provide per-module import relationships
           imports: [],
           dynamicImports: [],
           importers: [],
