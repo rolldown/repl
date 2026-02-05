@@ -38,6 +38,39 @@ export async function build(
   config: any,
 ): Promise<TransformResult> {
   const warnings: string[] = []
+
+  // Collect module information using a plugin
+  const moduleInfoMap = new Map<
+    string,
+    {
+      importedIds: string[]
+      dynamicallyImportedIds: string[]
+      importers: string[]
+      dynamicImporters: string[]
+      isEntry: boolean
+    }
+  >()
+
+  const moduleGraphPlugin = {
+    name: 'collect-module-graph',
+    buildEnd() {
+      // Collect all module info during buildEnd hook
+      const moduleIds = this.getModuleIds()
+      for (const id of moduleIds) {
+        const info = this.getModuleInfo(id)
+        if (info) {
+          moduleInfoMap.set(id, {
+            importedIds: info.importedIds,
+            dynamicallyImportedIds: info.dynamicallyImportedIds,
+            importers: info.importers,
+            dynamicImporters: info.dynamicImporters,
+            isEntry: info.isEntry,
+          })
+        }
+      }
+    },
+  }
+
   const inputOptions: InputOptions = {
     input,
     cwd: '/',
@@ -48,6 +81,7 @@ export async function build(
         logger(level, log)
       }
     },
+    plugins: [moduleGraphPlugin, ...(config?.plugins || [])],
     ...config,
   }
   const outputOptions: OutputOptions = {
@@ -80,36 +114,22 @@ export async function build(
       ]),
   )
 
-  // Extract module graph from chunks
+  // Extract module graph from chunks using collected module info
   const moduleMap = new Map<string, ModuleNode>()
   const chunks = result.output.filter(
     (chunk): chunk is OutputChunk => chunk.type === 'chunk',
   )
 
-  // First pass: identify all entry modules
-  const entryModules = new Set<string>()
-  for (const chunk of chunks) {
-    if (chunk.isEntry && chunk.facadeModuleId) {
-      entryModules.add(chunk.facadeModuleId)
-    }
-  }
-
-  // Second pass: build module graph from all chunks
-  for (const chunk of chunks) {
-    for (const [moduleId] of Object.entries(chunk.modules)) {
-      if (!moduleMap.has(moduleId)) {
-        moduleMap.set(moduleId, {
-          id: moduleId,
-          // TODO: Populate import/importer relationships when Rolldown exposes module graph API
-          // Currently, Rolldown's browser output doesn't provide per-module import relationships
-          imports: [],
-          dynamicImports: [],
-          importers: [],
-          dynamicImporters: [],
-          isEntry: entryModules.has(moduleId),
-        })
-      }
-    }
+  // Build module graph from collected module information
+  for (const [moduleId, info] of moduleInfoMap.entries()) {
+    moduleMap.set(moduleId, {
+      id: moduleId,
+      imports: info.importedIds,
+      dynamicImports: info.dynamicallyImportedIds,
+      importers: info.importers,
+      dynamicImporters: info.dynamicImporters,
+      isEntry: info.isEntry,
+    })
   }
 
   // Extract chunk graph
