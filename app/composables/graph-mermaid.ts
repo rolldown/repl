@@ -49,8 +49,8 @@ export function generateModuleGraphMermaid(modules: ModuleNode[]): string {
   // If no edges exist, add a note
   if (modules.length === 1 && modules[0].imports.length === 0) {
     lines.push(
-      `  note["Single module, no imports"]`,
-      `  style note fill:#f3f4f6,stroke:#d1d5db,shape:notch-rect`,
+      `  note@{ shape: notch-rect, label: "Single module, no imports" }`,
+      `  style note fill:#f3f4f6,stroke:#d1d5db`,
     )
   }
 
@@ -124,8 +124,8 @@ export function generateChunkGraphMermaid(chunks: ChunkNode[]): string {
   )
   if (!hasEdges && chunks.length === 1) {
     lines.push(
-      `  note["Single chunk, no imports"]`,
-      `  style note fill:#f3f4f6,stroke:#d1d5db,shape:notch-rect`,
+      `  note@{ shape: notch-rect, label: "Single chunk, no imports" }`,
+      `  style note fill:#f3f4f6,stroke:#d1d5db`,
     )
   }
 
