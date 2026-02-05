@@ -86,17 +86,27 @@ export async function build(
     (chunk): chunk is OutputChunk => chunk.type === 'chunk',
   )
 
-  // Build module graph from all chunks
+  // First pass: identify all entry modules
+  const entryModules = new Set<string>()
+  for (const chunk of chunks) {
+    if (chunk.isEntry && chunk.facadeModuleId) {
+      entryModules.add(chunk.facadeModuleId)
+    }
+  }
+
+  // Second pass: build module graph from all chunks
   for (const chunk of chunks) {
     for (const [moduleId] of Object.entries(chunk.modules)) {
       if (!moduleMap.has(moduleId)) {
         moduleMap.set(moduleId, {
           id: moduleId,
+          // Note: Rolldown's current output doesn't expose per-module import/importer relationships
+          // These would need to be populated from the module graph API if/when available
           imports: [],
           dynamicImports: [],
           importers: [],
           dynamicImporters: [],
-          isEntry: chunk.isEntry && chunk.facadeModuleId === moduleId,
+          isEntry: entryModules.has(moduleId),
         })
       }
     }

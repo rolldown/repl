@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { ChunkNode, ModuleNode } from '~/composables/bundler'
 
-const { moduleGraph, chunkGraph, isLoading } = defineProps<{
+const props = defineProps<{
   moduleGraph?: ModuleNode[]
   chunkGraph?: ChunkNode[]
   isLoading?: boolean
@@ -12,9 +12,9 @@ const activeTab = ref<'module' | 'chunk'>('module')
 // Compute graph statistics
 const stats = computed(() => {
   return {
-    modules: moduleGraph?.length || 0,
-    chunks: chunkGraph?.length || 0,
-    entries: moduleGraph?.filter((m) => m.isEntry).length || 0,
+    modules: props.moduleGraph?.length || 0,
+    chunks: props.chunkGraph?.length || 0,
+    entries: props.moduleGraph?.filter((m) => m.isEntry).length || 0,
   }
 })
 </script>
@@ -39,17 +39,17 @@ const stats = computed(() => {
     </div>
 
     <div min-h-0 w-full flex-1 overflow-auto p4>
-      <Loading v-if="isLoading" text="Loading graph..." />
+      <Loading v-if="props.isLoading" text="Loading graph..." />
 
       <!-- Module Graph View -->
-      <div v-else-if="activeTab === 'module' && moduleGraph">
+      <div v-else-if="activeTab === 'module' && props.moduleGraph">
         <div mb4 text-sm text-secondary>
           <div>{{ stats.modules }} modules, {{ stats.entries }} entries</div>
         </div>
 
         <div class="graph-nodes">
           <div
-            v-for="module in moduleGraph"
+            v-for="module in props.moduleGraph"
             :key="module.id"
             class="graph-node"
             :class="module.isEntry && 'entry-node'"
@@ -105,14 +105,14 @@ const stats = computed(() => {
       </div>
 
       <!-- Chunk Graph View -->
-      <div v-else-if="activeTab === 'chunk' && chunkGraph">
+      <div v-else-if="activeTab === 'chunk' && props.chunkGraph">
         <div mb4 text-sm text-secondary>
           <div>{{ stats.chunks }} chunks</div>
         </div>
 
         <div class="graph-nodes">
           <div
-            v-for="chunk in chunkGraph"
+            v-for="chunk in props.chunkGraph"
             :key="chunk.fileName"
             class="graph-node"
             :class="chunk.isEntry && 'entry-node'"
