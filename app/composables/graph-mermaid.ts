@@ -84,7 +84,7 @@ export function generateChunkGraphMermaid(chunks: ChunkNode[]): string {
     if (chunk.isDynamicEntry) {
       label += ' (dynamic)'
     }
-    label += String.raw`\n${moduleCount} module${moduleCount === 1 ? '' : 's'}`
+    label += `<br/>${moduleCount} module${moduleCount === 1 ? '' : 's'}`
 
     if (chunk.isEntry) {
       lines.push(
