@@ -50,7 +50,7 @@ export function generateModuleGraphMermaid(modules: ModuleNode[]): string {
   if (modules.length === 1 && modules[0].imports.length === 0) {
     lines.push(
       `  note["Single module, no imports"]`,
-      `  style note fill:#f3f4f6,stroke:#d1d5db`,
+      `  style note fill:#f3f4f6,stroke:#d1d5db,shape:notch-rect`,
     )
   }
 
@@ -125,7 +125,7 @@ export function generateChunkGraphMermaid(chunks: ChunkNode[]): string {
   if (!hasEdges && chunks.length === 1) {
     lines.push(
       `  note["Single chunk, no imports"]`,
-      `  style note fill:#f3f4f6,stroke:#d1d5db`,
+      `  style note fill:#f3f4f6,stroke:#d1d5db,shape:notch-rect`,
     )
   }
 
