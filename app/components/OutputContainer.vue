@@ -10,6 +10,7 @@ import {
   timeCost,
 } from '~/state/bundler'
 import { npmVfsFiles, userDependencies } from '~/state/npm'
+import { bundlerError, bundlerOutput, bundlerStatus } from '~/state/output'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -144,6 +145,17 @@ watch(
 )
 
 watch([files, currentVersion], () => refresh(), { deep: true })
+
+// Sync with shared state
+watch(data, (newData) => {
+  bundlerOutput.value = newData
+})
+watch(status, (newStatus) => {
+  bundlerStatus.value = newStatus
+})
+watch(error, (newError) => {
+  bundlerError.value = newError
+})
 
 const isLoading = computed(() => status.value === 'pending')
 const isLoadingDebounced = useDebounce(isLoading, 100)

@@ -4,10 +4,32 @@ import type {
   OutputOptions,
 } from '@rolldown/browser'
 
+export interface ModuleNode {
+  id: string
+  imports: string[]
+  dynamicImports: string[]
+  importers: string[]
+  dynamicImporters: string[]
+  isEntry: boolean
+}
+
+export interface ChunkNode {
+  fileName: string
+  name: string
+  isEntry: boolean
+  isDynamicEntry: boolean
+  imports: string[]
+  dynamicImports: string[]
+  exports: string[]
+  modules: string[]
+}
+
 export interface TransformResult {
   output: Record<string, string>
   sourcemaps?: Record<string, string>
   warnings?: string[]
+  moduleGraph?: ModuleNode[]
+  chunkGraph?: ChunkNode[]
 }
 
 export async function build(
@@ -58,9 +80,45 @@ export async function build(
       ]),
   )
 
+  // Extract module graph from chunks
+  const moduleMap = new Map<string, ModuleNode>()
+  const chunks = result.output.filter(
+    (chunk): chunk is OutputChunk => chunk.type === 'chunk',
+  )
+
+  // Build module graph from all chunks
+  for (const chunk of chunks) {
+    for (const [moduleId] of Object.entries(chunk.modules)) {
+      if (!moduleMap.has(moduleId)) {
+        moduleMap.set(moduleId, {
+          id: moduleId,
+          imports: [],
+          dynamicImports: [],
+          importers: [],
+          dynamicImporters: [],
+          isEntry: chunk.isEntry && chunk.facadeModuleId === moduleId,
+        })
+      }
+    }
+  }
+
+  // Extract chunk graph
+  const chunkGraph: ChunkNode[] = chunks.map((chunk) => ({
+    fileName: chunk.fileName,
+    name: chunk.name,
+    isEntry: chunk.isEntry,
+    isDynamicEntry: chunk.isDynamicEntry,
+    imports: chunk.imports,
+    dynamicImports: chunk.dynamicImports,
+    exports: chunk.exports,
+    modules: Object.keys(chunk.modules),
+  }))
+
   return {
     output,
     sourcemaps,
     warnings,
+    moduleGraph: Array.from(moduleMap.values()),
+    chunkGraph,
   }
 }
