@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {
+  generateChunkGraphMermaid,
+  generateModuleGraphMermaid,
+} from '~/composables/graph-mermaid'
 import type { ChunkNode, ModuleNode } from '~/composables/bundler'
 
 const props = defineProps<{
@@ -8,6 +12,10 @@ const props = defineProps<{
 }>()
 
 const activeTab = ref<'module' | 'chunk'>('module')
+const { mermaidLoaded, mermaidError, renderDiagram } = useMermaid()
+const moduleGraphSvg = ref<string>('')
+const chunkGraphSvg = ref<string>('')
+const renderError = ref<string | null>(null)
 
 // Compute graph statistics
 const stats = computed(() => {
@@ -17,6 +25,48 @@ const stats = computed(() => {
     entries: props.moduleGraph?.filter((m) => m.isEntry).length || 0,
   }
 })
+
+// Render module graph when data changes
+watch(
+  () => props.moduleGraph,
+  async (modules) => {
+    if (!modules || modules.length === 0) {
+      moduleGraphSvg.value = ''
+      return
+    }
+
+    const definition = generateModuleGraphMermaid(modules)
+    const svg = await renderDiagram(definition, 'module-graph')
+    if (svg) {
+      moduleGraphSvg.value = svg
+      renderError.value = null
+    } else {
+      renderError.value = 'Failed to render module graph'
+    }
+  },
+  { immediate: true },
+)
+
+// Render chunk graph when data changes
+watch(
+  () => props.chunkGraph,
+  async (chunks) => {
+    if (!chunks || chunks.length === 0) {
+      chunkGraphSvg.value = ''
+      return
+    }
+
+    const definition = generateChunkGraphMermaid(chunks)
+    const svg = await renderDiagram(definition, 'chunk-graph')
+    if (svg) {
+      chunkGraphSvg.value = svg
+      renderError.value = null
+    } else {
+      renderError.value = 'Failed to render chunk graph'
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -41,140 +91,63 @@ const stats = computed(() => {
     <div min-h-0 w-full flex-1 overflow-auto p4>
       <Loading v-if="props.isLoading" text="Loading graph..." />
 
+      <!-- Error Message -->
+      <div v-else-if="mermaidError || renderError" class="error-state">
+        <div i-ph:warning text-6xl text-red op60 />
+        <div mt4 text-secondary>
+          {{ mermaidError || renderError }}
+        </div>
+      </div>
+
       <!-- Module Graph View -->
-      <div v-else-if="activeTab === 'module' && props.moduleGraph">
-        <div mb4 text-sm text-secondary>
+      <div
+        v-else-if="activeTab === 'module'"
+        class="graph-container"
+        flex="~ col"
+        items-center
+      >
+        <div v-if="stats.modules > 0" mb4 w-full text-sm text-secondary>
           <div>{{ stats.modules }} modules, {{ stats.entries }} entries</div>
         </div>
 
-        <div class="graph-nodes">
-          <div
-            v-for="module in props.moduleGraph"
-            :key="module.id"
-            class="graph-node"
-            :class="module.isEntry && 'entry-node'"
-          >
-            <div class="node-title" flex items-center gap2>
-              <div
-                v-if="module.isEntry"
-                i-ph:house-line-duotone
-                text-accent
-                title="Entry module"
-              />
-              <span text-3.25 font-mono>{{ module.id }}</span>
-            </div>
-
-            <div mt2 text-3 text-secondary>
-              <div v-if="module.imports.length > 0">
-                <div font-medium>Imports ({{ module.imports.length }}):</div>
-                <div v-for="imp in module.imports" :key="imp" ml2 font-mono>
-                  → {{ imp }}
-                </div>
-              </div>
-
-              <div v-if="module.dynamicImports.length > 0" mt1>
-                <div font-medium>
-                  Dynamic Imports ({{ module.dynamicImports.length }}):
-                </div>
-                <div
-                  v-for="imp in module.dynamicImports"
-                  :key="imp"
-                  ml2
-                  font-mono
-                >
-                  ⇢ {{ imp }}
-                </div>
-              </div>
-
-              <div v-if="module.importers.length > 0" mt1>
-                <div font-medium>
-                  Imported by ({{ module.importers.length }}):
-                </div>
-                <div
-                  v-for="importer in module.importers"
-                  :key="importer"
-                  ml2
-                  font-mono
-                >
-                  ← {{ importer }}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div
+          v-if="moduleGraphSvg"
+          class="mermaid-diagram"
+          v-html="moduleGraphSvg"
+        />
+        <div v-else-if="!mermaidLoaded" class="empty-state">
+          <div i-ph:graph text-6xl text-secondary op40 />
+          <div mt4 text-secondary>Loading Mermaid...</div>
+        </div>
+        <div v-else class="empty-state">
+          <div i-ph:graph text-6xl text-secondary op40 />
+          <div mt4 text-secondary>No module graph data available</div>
         </div>
       </div>
 
       <!-- Chunk Graph View -->
-      <div v-else-if="activeTab === 'chunk' && props.chunkGraph">
-        <div mb4 text-sm text-secondary>
+      <div
+        v-else-if="activeTab === 'chunk'"
+        class="graph-container"
+        flex="~ col"
+        items-center
+      >
+        <div v-if="stats.chunks > 0" mb4 w-full text-sm text-secondary>
           <div>{{ stats.chunks }} chunks</div>
         </div>
 
-        <div class="graph-nodes">
-          <div
-            v-for="chunk in props.chunkGraph"
-            :key="chunk.fileName"
-            class="graph-node"
-            :class="chunk.isEntry && 'entry-node'"
-          >
-            <div class="node-title" flex items-center gap2>
-              <div
-                v-if="chunk.isEntry"
-                i-ph:house-line-duotone
-                text-accent
-                title="Entry chunk"
-              />
-              <span text-3.25 font-mono>{{ chunk.fileName }}</span>
-              <span v-if="chunk.isDynamicEntry" text-2.75 text-secondary>
-                (dynamic)
-              </span>
-            </div>
-
-            <div mt2 text-3 text-secondary>
-              <div v-if="chunk.modules.length > 0">
-                <div font-medium>Modules ({{ chunk.modules.length }}):</div>
-                <div v-for="mod in chunk.modules" :key="mod" ml2 font-mono>
-                  • {{ mod }}
-                </div>
-              </div>
-
-              <div v-if="chunk.imports.length > 0" mt1>
-                <div font-medium>Imports ({{ chunk.imports.length }}):</div>
-                <div v-for="imp in chunk.imports" :key="imp" ml2 font-mono>
-                  → {{ imp }}
-                </div>
-              </div>
-
-              <div v-if="chunk.dynamicImports.length > 0" mt1>
-                <div font-medium>
-                  Dynamic Imports ({{ chunk.dynamicImports.length }}):
-                </div>
-                <div
-                  v-for="imp in chunk.dynamicImports"
-                  :key="imp"
-                  ml2
-                  font-mono
-                >
-                  ⇢ {{ imp }}
-                </div>
-              </div>
-
-              <div v-if="chunk.exports.length > 0" mt1>
-                <div font-medium>Exports ({{ chunk.exports.length }}):</div>
-                <div v-for="exp in chunk.exports" :key="exp" ml2 font-mono>
-                  ↗ {{ exp }}
-                </div>
-              </div>
-            </div>
-          </div>
+        <div
+          v-if="chunkGraphSvg"
+          class="mermaid-diagram"
+          v-html="chunkGraphSvg"
+        />
+        <div v-else-if="!mermaidLoaded" class="empty-state">
+          <div i-ph:graph text-6xl text-secondary op40 />
+          <div mt4 text-secondary>Loading Mermaid...</div>
         </div>
-      </div>
-
-      <div v-else class="empty-state">
-        <div i-ph:graph text-6xl text-secondary op40 />
-        <div mt4 text-secondary>
-          No {{ activeTab === 'module' ? 'module' : 'chunk' }} graph data
-          available
+        <div v-else class="empty-state">
+          <div i-ph:graph text-6xl text-secondary op40 />
+          <div mt4 text-secondary>No chunk graph data available</div>
         </div>
       </div>
     </div>
@@ -208,33 +181,21 @@ const stats = computed(() => {
   border-bottom-color: var(--c-accent);
 }
 
-.graph-nodes {
+.graph-container {
+  width: 100%;
+  max-width: 100%;
+}
+
+.mermaid-diagram {
+  width: 100%;
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  justify-content: center;
+  overflow: auto;
 }
 
-.graph-node {
-  padding: 12px 16px;
-  border: 1px solid var(--c-border);
-  border-radius: var(--radius-md);
-  background: var(--c-bg);
-  transition: border-color var(--transition-fast);
-}
-
-.graph-node:hover {
-  border-color: var(--c-border-hover);
-}
-
-.graph-node.entry-node {
-  border-color: var(--c-accent);
-  border-width: 2px;
-  background: var(--c-accent-soft);
-}
-
-.node-title {
-  color: var(--c-text-base);
-  font-weight: 500;
+.mermaid-diagram :deep(svg) {
+  max-width: 100%;
+  height: auto;
 }
 
 .empty-state {
@@ -244,5 +205,19 @@ const stats = computed(() => {
   justify-content: center;
   height: 100%;
   min-height: 200px;
+}
+
+.error-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 200px;
+  color: #dc2626;
+}
+
+:global(.dark) .error-state {
+  color: #f87171;
 }
 </style>
