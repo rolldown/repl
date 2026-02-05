@@ -1,51 +1,33 @@
 /**
  * Composable to use Mermaid for diagram rendering
- * Loads Mermaid from CDN to avoid npm trust issues
+ * Uses dynamic import to lazy load mermaid from npm package
  */
 export function useMermaid() {
   const mermaidLoaded = ref(false)
   const mermaidError = ref<string | null>(null)
+  let mermaidInstance: any = null
 
-  // Load Mermaid from CDN
+  // Initialize Mermaid with lazy loading
   async function loadMermaid() {
     if (mermaidLoaded.value) return true
 
     try {
-      // Check if already loaded
-      if (globalThis.mermaid) {
-        mermaidLoaded.value = true
-        return true
-      }
+      // Dynamically import mermaid only when needed
+      const mermaidModule = await import('mermaid')
+      mermaidInstance = mermaidModule.default
 
-      // Load from CDN
-      const script = document.createElement('script')
-      script.src = 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js'
-      script.type = 'module'
-
-      await new Promise<void>((resolve, reject) => {
-        script.addEventListener('load', () => resolve())
-        script.addEventListener('error', () =>
-          reject(new Error('Failed to load Mermaid from CDN')),
-        )
-        document.head.append(script)
+      // Initialize Mermaid with config
+      mermaidInstance.initialize({
+        startOnLoad: false,
+        theme: 'default',
+        securityLevel: 'loose',
+        fontFamily: 'ui-monospace, monospace',
       })
-
-      // Initialize Mermaid
-      if (globalThis.mermaid) {
-        globalThis.mermaid.initialize({
-          startOnLoad: false,
-          theme: 'default',
-          securityLevel: 'loose',
-          fontFamily: 'ui-monospace, monospace',
-        })
-        mermaidLoaded.value = true
-        return true
-      }
-
-      throw new Error('Mermaid not available after loading')
+      mermaidLoaded.value = true
+      return true
     } catch (error) {
       mermaidError.value =
-        error instanceof Error ? error.message : 'Failed to load Mermaid'
+        error instanceof Error ? error.message : 'Failed to initialize Mermaid'
       return false
     }
   }
@@ -61,7 +43,7 @@ export function useMermaid() {
     }
 
     try {
-      const { svg } = await globalThis.mermaid.render(elementId, definition)
+      const { svg } = await mermaidInstance.render(elementId, definition)
       return svg
     } catch (error) {
       mermaidError.value =
@@ -75,18 +57,5 @@ export function useMermaid() {
     mermaidError,
     loadMermaid,
     renderDiagram,
-  }
-}
-
-// Extend Window interface for TypeScript
-declare global {
-  interface Window {
-    mermaid?: {
-      initialize: (config: any) => void
-      render: (
-        id: string,
-        definition: string,
-      ) => Promise<{ svg: string; bindFunctions?: (element: Element) => void }>
-    }
   }
 }
