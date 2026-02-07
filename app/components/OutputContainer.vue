@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import ansis from 'ansis'
 import { build } from '~/composables/bundler'
 import { installDependencies } from '~/composables/npm'
 import {
@@ -151,24 +150,22 @@ const isLoadingDebounced = useDebounce(isLoading, 100)
 const tabs = computed(() => Object.keys(data.value?.output || {}))
 const activeOutputTab = ref<string>()
 
-const errorText = computed(() => {
-  if (!error.value) return ''
+const errorStack = computed(() => {
+  if (!error.value) return null
   console.error(error.value)
-  const str = ansis.strip(String(error.value))
-  let stack: string | undefined
   if (error.value instanceof Error) {
-    stack = error.value.stack
-    stack &&= ansis.strip(stack)
+    const stack = error.value.stack
     if (isSafari)
-      stack = stack
+      return stack
         ?.split('\n')
         .map((line) => {
           const [fn, file] = line.split('@', 2)
           return `${' '.repeat(4)}at ${fn} (${file})`
         })
         .join('\n')
+    return stack
   }
-  return `${str}\n\n${stack && str !== stack ? `${stack}\n` : ''}`
+  return null
 })
 
 const utf16ToUTF8 = (str: string) => unescape(encodeURIComponent(str))
@@ -205,13 +202,13 @@ const sourcemapLinks = computed(() => {
       class="error-output"
       m2
       overflow-auto
-      whitespace-pre
       rounded-1.5
       p3
       text-3.25
-      font-mono
-      v-text="errorText"
-    />
+    >
+      <AnsiViewer v-if="error?.message" :source="error.message" />
+      <pre v-if="errorStack" mt4 font-mono v-text="errorStack" />
+    </div>
     <Tabs
       v-else-if="status === 'success' || status === 'pending'"
       v-slot="{ value }"
@@ -254,17 +251,18 @@ const sourcemapLinks = computed(() => {
       v-if="status === 'success' && data?.warnings?.length"
       class="warnings-output"
       max-h="50%"
-      overflow-x-auto
-      whitespace-pre
       border-t
       border-base
       px3
       py2
       pb4
       text-3.25
-      font-mono
     >
-      {{ ansis.strip(data?.warnings.join('\n') || '') }}
+      <AnsiViewer
+        v-for="(warning, i) in data.warnings"
+        :key="i"
+        :source="warning"
+      />
     </div>
   </div>
 </template>
