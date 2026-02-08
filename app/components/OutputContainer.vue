@@ -206,7 +206,7 @@ const sourcemapLinks = computed(() => {
       p3
       text-3.25
     >
-      <AnsiViewer v-if="error?.message" :source="error.message" />
+      <LogViewer v-if="error?.message" :source="error.message" />
       <pre v-if="errorStack" mt4 font-mono v-text="errorStack" />
     </div>
     <Tabs
@@ -251,6 +251,7 @@ const sourcemapLinks = computed(() => {
       v-if="status === 'success' && data?.warnings?.length"
       class="warnings-output"
       max-h="50%"
+      overflow-y-auto
       border-t
       border-base
       px3
@@ -258,7 +259,7 @@ const sourcemapLinks = computed(() => {
       pb4
       text-3.25
     >
-      <AnsiViewer
+      <LogViewer
         v-for="(warning, i) in data.warnings"
         :key="i"
         :source="warning"
