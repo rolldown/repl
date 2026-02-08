@@ -153,19 +153,21 @@ const activeOutputTab = ref<string>()
 const errorStack = computed(() => {
   if (!error.value) return null
   console.error(error.value)
-  if (error.value instanceof Error) {
-    const stack = error.value.stack
-    if (isSafari)
-      return stack
-        ?.split('\n')
-        .map((line) => {
-          const [fn, file] = line.split('@', 2)
-          return `${' '.repeat(4)}at ${fn} (${file})`
-        })
-        .join('\n')
-    return stack
+  if (!(error.value instanceof Error)) return null
+
+  if (isSafari || isFirefox) {
+    return error.value.stack
+      ?.split('\n')
+      .filter(Boolean) // Filter out empty lines
+      .map((line) => {
+        const [fn, ...file] = line.split('@')
+        return `${' '.repeat(4)}at ${fn} (${file.join('@')})`
+      })
+      .join('\n')
+  } else {
+    // Chromium shows the stack along with the original message, remove it
+    return error.value.stack?.replace(`Error: ${error.value.message}`, '')
   }
-  return null
 })
 
 const utf16ToUTF8 = (str: string) => unescape(encodeURIComponent(str))
