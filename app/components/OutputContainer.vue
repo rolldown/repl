@@ -9,6 +9,7 @@ import {
   timeCost,
 } from '~/state/bundler'
 import { npmVfsFiles, userDependencies } from '~/state/npm'
+import type { BuildOptions } from '@rolldown/browser'
 
 const { data: rolldownVersions } = await useRolldownVersions()
 
@@ -57,7 +58,7 @@ const { data, status, error, refresh } = useAsyncData(
     const configFile =
       files.value.get(CONFIG_FILES[0]!) || files.value.get(CONFIG_FILES[1]!)
     if (configFile) {
-      const { output } = await core.build({
+      const buildConfig: BuildOptions = {
         input: `/${configFile.filename}`,
         cwd: '/',
         output: { format: 'cjs' },
@@ -66,7 +67,15 @@ const { data, status, error, refresh } = useAsyncData(
         transform: {
           define: { 'import.meta': 'importMeta' },
         },
-      })
+      }
+
+      //@ts-expect-error This is for older Rolldown versions
+      buildConfig.define = {
+        'import.meta': 'importMeta',
+        // This is here for versions before https://github.com/rolldown/rolldown/pull/5378
+        'import.meta.input': 'importMeta.input',
+      }
+      const { output } = await core.build(buildConfig)
       const configCode = output[0].code
 
       if (configCode.trim()) {
@@ -83,6 +92,7 @@ const { data, status, error, refresh } = useAsyncData(
           throw new Error(`Cannot import '${id}' in config file`)
         }
         const module = { exports: {} as any }
+        // Note: if you add properties here, also update the code above
         const importMeta = { input: entries.value }
         configFn(require, module, importMeta)
 
