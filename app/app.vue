@@ -32,7 +32,7 @@ useHeadSafe({
         <div min-h-0 flex flex-1 flex-col lg:flex-row>
           <InputContainer min-w-0 flex-1 />
           <div class="panel-divider" />
-          <OutputContainer min-w-0 flex-1 />
+          <OutputView min-w-0 flex-1 />
         </div>
       </main>
 

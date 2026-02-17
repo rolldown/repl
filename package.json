@@ -20,6 +20,7 @@
     "@vueuse/core": "^14.1.0",
     "ansis": "^4.2.0",
     "fflate": "^0.8.2",
+    "mermaid": "^11.12.2",
     "modern-tar": "^0.7.3",
     "monaco-editor": "^0.55.1",
     "monaco-editor-auto-typings": "^0.4.6",
