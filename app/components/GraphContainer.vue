@@ -17,6 +17,15 @@ const moduleGraphSvg = ref<string>('')
 const chunkGraphSvg = ref<string>('')
 const renderError = ref<string | null>(null)
 
+const containerRef = ref<HTMLElement | null>(null)
+const { scale, isDragging, transform, onMouseDown, zoomIn, zoomOut, reset } =
+  useZoomPan(containerRef)
+
+const scalePercent = computed(() => `${Math.round(scale.value * 100)}%`)
+
+// Reset zoom when switching tabs
+watch(activeTab, () => reset())
+
 // Compute graph statistics
 const stats = computed(() => {
   return {
@@ -86,9 +95,31 @@ watch(
       >
         Chunk Graph
       </button>
+
+      <div ml-auto flex items-center gap1 pr2>
+        <button class="zoom-btn" title="Zoom out" @click="zoomOut">
+          <div i-ph:magnifying-glass-minus />
+        </button>
+        <span class="zoom-level">{{ scalePercent }}</span>
+        <button class="zoom-btn" title="Zoom in" @click="zoomIn">
+          <div i-ph:magnifying-glass-plus />
+        </button>
+        <button class="zoom-btn" title="Reset zoom" @click="reset">
+          <div i-ph:arrows-in />
+        </button>
+      </div>
     </div>
 
-    <div min-h-0 w-full flex-1 overflow-auto p4>
+    <div
+      ref="containerRef"
+      relative
+      min-h-0
+      w-full
+      flex-1
+      overflow-hidden
+      :class="isDragging ? 'cursor-grabbing' : 'cursor-grab'"
+      @mousedown="onMouseDown"
+    >
       <Loading v-if="props.isLoading" text="Loading graph..." />
 
       <!-- Error Message -->
@@ -99,55 +130,63 @@ watch(
         </div>
       </div>
 
-      <!-- Module Graph View -->
+      <!-- Zoomable content -->
       <div
-        v-else-if="activeTab === 'module'"
-        class="graph-container"
-        flex="~ col"
-        items-center
+        v-else
+        class="zoom-content"
+        :style="{ transform, transformOrigin: '0 0' }"
+        p4
       >
-        <div v-if="stats.modules > 0" mb4 w-full text-sm text-secondary>
-          <div>{{ stats.modules }} modules, {{ stats.entries }} entries</div>
-        </div>
-
+        <!-- Module Graph View -->
         <div
-          v-if="moduleGraphSvg"
-          class="mermaid-diagram"
-          v-html="moduleGraphSvg"
-        />
-        <div v-else-if="!mermaidLoaded" class="empty-state">
-          <div i-ph:graph text-6xl text-secondary op40 />
-          <div mt4 text-secondary>Loading Mermaid...</div>
-        </div>
-        <div v-else class="empty-state">
-          <div i-ph:graph text-6xl text-secondary op40 />
-          <div mt4 text-secondary>No module graph data available</div>
-        </div>
-      </div>
+          v-if="activeTab === 'module'"
+          class="graph-container"
+          flex="~ col"
+          items-center
+        >
+          <div v-if="stats.modules > 0" mb4 w-full text-sm text-secondary>
+            <div>{{ stats.modules }} modules, {{ stats.entries }} entries</div>
+          </div>
 
-      <!-- Chunk Graph View -->
-      <div
-        v-else-if="activeTab === 'chunk'"
-        class="graph-container"
-        flex="~ col"
-        items-center
-      >
-        <div v-if="stats.chunks > 0" mb4 w-full text-sm text-secondary>
-          <div>{{ stats.chunks }} chunks</div>
+          <div
+            v-if="moduleGraphSvg"
+            class="mermaid-diagram"
+            v-html="moduleGraphSvg"
+          />
+          <div v-else-if="!mermaidLoaded" class="empty-state">
+            <div i-ph:graph text-6xl text-secondary op40 />
+            <div mt4 text-secondary>Loading Mermaid...</div>
+          </div>
+          <div v-else class="empty-state">
+            <div i-ph:graph text-6xl text-secondary op40 />
+            <div mt4 text-secondary>No module graph data available</div>
+          </div>
         </div>
 
+        <!-- Chunk Graph View -->
         <div
-          v-if="chunkGraphSvg"
-          class="mermaid-diagram"
-          v-html="chunkGraphSvg"
-        />
-        <div v-else-if="!mermaidLoaded" class="empty-state">
-          <div i-ph:graph text-6xl text-secondary op40 />
-          <div mt4 text-secondary>Loading Mermaid...</div>
-        </div>
-        <div v-else class="empty-state">
-          <div i-ph:graph text-6xl text-secondary op40 />
-          <div mt4 text-secondary>No chunk graph data available</div>
+          v-else-if="activeTab === 'chunk'"
+          class="graph-container"
+          flex="~ col"
+          items-center
+        >
+          <div v-if="stats.chunks > 0" mb4 w-full text-sm text-secondary>
+            <div>{{ stats.chunks }} chunks</div>
+          </div>
+
+          <div
+            v-if="chunkGraphSvg"
+            class="mermaid-diagram"
+            v-html="chunkGraphSvg"
+          />
+          <div v-else-if="!mermaidLoaded" class="empty-state">
+            <div i-ph:graph text-6xl text-secondary op40 />
+            <div mt4 text-secondary>Loading Mermaid...</div>
+          </div>
+          <div v-else class="empty-state">
+            <div i-ph:graph text-6xl text-secondary op40 />
+            <div mt4 text-secondary>No chunk graph data available</div>
+          </div>
         </div>
       </div>
     </div>
@@ -181,6 +220,37 @@ watch(
   border-bottom-color: var(--c-accent);
 }
 
+.zoom-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  color: var(--c-text-secondary);
+  transition:
+    color var(--transition-fast),
+    background var(--transition-fast);
+}
+
+.zoom-btn:hover {
+  color: var(--c-text-base);
+  background: var(--c-bg-mute);
+}
+
+.zoom-level {
+  font-size: 11px;
+  color: var(--c-text-secondary);
+  min-width: 32px;
+  text-align: center;
+  user-select: none;
+}
+
+.zoom-content {
+  width: max-content;
+  min-width: 100%;
+}
+
 .graph-container {
   width: 100%;
   max-width: 100%;
@@ -190,11 +260,10 @@ watch(
   width: 100%;
   display: flex;
   justify-content: center;
-  overflow: auto;
 }
 
 .mermaid-diagram :deep(svg) {
-  max-width: 100%;
+  max-width: none;
   height: auto;
 }
 
