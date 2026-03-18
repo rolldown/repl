@@ -27,20 +27,30 @@ const { data, status, error, refresh } = useAsyncData(
 
     loadingPhase.value = 'loading'
 
-    const [core, experimental, plugins, binding] = await Promise.all([
-      import(
-        /* @vite-ignore */ `/api/proxy/@${version}/dist/index.browser.mjs`
-      ) as Promise<typeof import('@rolldown/browser')>,
-      import(
-        /* @vite-ignore */ `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
-      ) as Promise<typeof import('@rolldown/browser/experimental')>,
-      import(
-        /* @vite-ignore */ `/api/proxy/@${version}/dist/plugins-index.browser.mjs`
-      ).catch(() => null),
-      import(
-        /* @vite-ignore */ `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`
-      ),
-    ])
+    const [core, experimental, plugins, binding] = await Promise.all(
+      import.meta.env.VITE_USE_LOCAL_ROLLDOWN
+        ? [
+            import('@rolldown/browser'),
+            import('@rolldown/browser/experimental'),
+            import('@rolldown/browser/plugins').catch(() => null),
+            // @ts-expect-error Custom alias
+            import('@rolldown/browser/rolldown-binding-wasi'),
+          ]
+        : [
+            import(
+              /* @vite-ignore */ `/api/proxy/@${version}/dist/index.browser.mjs`
+            ) as Promise<typeof import('@rolldown/browser')>,
+            import(
+              /* @vite-ignore */ `/api/proxy/@${version}/dist/experimental-index.browser.mjs`
+            ) as Promise<typeof import('@rolldown/browser/experimental')>,
+            import(
+              /* @vite-ignore */ `/api/proxy/@${version}/dist/plugins-index.browser.mjs`
+            ).catch(() => null),
+            import(
+              /* @vite-ignore */ `/api/proxy/@${version}/dist/rolldown-binding.wasi-browser.js`
+            ),
+          ],
+    )
 
     loadingPhase.value = 'bundling'
 

@@ -1,7 +1,12 @@
+import process from 'node:process'
+import { fileURLToPath } from 'node:url'
+
 const crossOriginHeaders = {
   'Cross-Origin-Embedder-Policy': 'require-corp',
   'Cross-Origin-Opener-Policy': 'same-origin',
 }
+
+process.env.VITE_USE_LOCAL_ROLLDOWN = '' // set to `1` to use local rolldown build for development
 
 export default defineNuxtConfig({
   modules: [
@@ -18,7 +23,16 @@ export default defineNuxtConfig({
     resolve: {
       alias: {
         path: 'pathe',
+        '@rolldown/browser/rolldown-binding-wasi': fileURLToPath(
+          new URL(
+            'rolldown-binding.wasi-browser.js',
+            import.meta.resolve('@rolldown/browser'),
+          ),
+        ),
       },
+    },
+    optimizeDeps: {
+      exclude: ['@rolldown/browser'],
     },
     build: {
       target: 'esnext',
