@@ -166,6 +166,20 @@ watch(error, (newError) => {
   bundlerError.value = newError
 })
 
+const napiWorkerError = ref<{
+  message?: string
+  stack?: string
+} | null>(null)
+useEventListener(globalThis, 'napi-rs-worker-error', (event: CustomEvent) => {
+  napiWorkerError.value = event.detail
+})
+
+watch(status, (newStatus) => {
+  if (newStatus === 'pending') {
+    napiWorkerError.value = null
+  }
+})
+
 const isLoading = computed(() => status.value === 'pending')
 const isLoadingDebounced = useDebounce(isLoading, 100)
 
@@ -232,6 +246,26 @@ const sourcemapLinks = computed(() => {
     >
       <LogViewer v-if="error?.message" :source="error.message" />
       <pre v-if="errorStack" mt4 font-mono v-text="errorStack" />
+    </div>
+    <div
+      v-if="napiWorkerError"
+      class="error-output"
+      m2
+      overflow-auto
+      rounded-1.5
+      p3
+      text-3.25
+    >
+      <LogViewer
+        v-if="napiWorkerError.message"
+        :source="napiWorkerError.message"
+      />
+      <pre
+        v-if="napiWorkerError.stack"
+        mt4
+        font-mono
+        v-text="napiWorkerError.stack"
+      />
     </div>
     <Tabs
       v-else-if="status === 'success' || status === 'pending'"
