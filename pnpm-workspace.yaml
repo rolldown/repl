@@ -1,3 +1,6 @@
+overrides:
+  vite: ^8.0.12
+
 patchedDependencies:
   nuxt-monaco-editor: patches/nuxt-monaco-editor.patch
 
@@ -7,7 +10,4 @@ allowBuilds:
   esbuild: false
 
 trustPolicy: no-downgrade
-trustPolicyExclude:
-  - chokidar@4.0.3
-  - semver@6.3.1
-  - langium@3.3.1
+trustPolicyIgnoreAfter: 604800 # 7 days
