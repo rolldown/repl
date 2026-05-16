@@ -3,7 +3,7 @@
   "type": "module",
   "version": "0.0.0",
   "private": true,
-  "packageManager": "pnpm@11.1.1",
+  "packageManager": "pnpm@11.1.2",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -19,7 +19,7 @@
     "@stackblitz/sdk": "^1.11.0",
     "@vueuse/core": "^14.3.0",
     "ansis": "^4.3.0",
-    "fflate": "^0.8.2",
+    "fflate": "^0.8.3",
     "mermaid": "^11.15.0",
     "modern-tar": "^0.7.6",
     "monaco-editor": "^0.55.1",
@@ -35,20 +35,20 @@
     "@iconify-json/ri": "^1.2.10",
     "@iconify-json/vscode-icons": "^1.2.49",
     "@nuxtjs/plausible": "^3.0.2",
-    "@rolldown/browser": "^1.0.0",
+    "@rolldown/browser": "^1.0.1",
     "@sxzz/eslint-config": "^8.1.0",
     "@sxzz/prettier-config": "^2.3.1",
     "@unocss/eslint-plugin": "^66.6.8",
     "@unocss/nuxt": "^66.6.8",
     "@unocss/reset": "^66.6.8",
     "@vueuse/nuxt": "^14.3.0",
-    "eslint": "^10.3.0",
+    "eslint": "^10.4.0",
     "nuxt-monaco-editor": "^1.4.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
     "unocss": "^66.6.8",
-    "vite": "^8.0.12",
-    "vue-tsc": "^3.2.8"
+    "vite": "^8.0.13",
+    "vue-tsc": "^3.2.9"
   },
   "prettier": "@sxzz/prettier-config"
 }
