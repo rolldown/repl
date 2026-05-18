@@ -38,9 +38,6 @@ export default defineNuxtConfig({
     server: {
       headers: crossOriginHeaders,
     },
-    experimental: {
-      enableNativePlugin: 'resolver',
-    },
   },
   nitro: {
     routeRules: {

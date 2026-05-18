@@ -9,5 +9,13 @@ allowBuilds:
   '@rolldown/browser': false
   esbuild: false
 
+minimumReleaseAgeExclude:
+  - '@nuxt/kit@4.4.6'
+  - '@nuxt/nitro-server@4.4.6'
+  - '@nuxt/schema@4.4.6'
+  - '@nuxt/vite-builder@4.4.6'
+  - '@vue/language-core@3.3.0'
+  - nuxt@4.4.6
+  - vue-tsc@3.3.0
 trustPolicy: no-downgrade
 trustPolicyIgnoreAfter: 604800 # 7 days

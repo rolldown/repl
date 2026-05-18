@@ -1,9 +1,9 @@
 import { activeFile, files } from '~/state/bundler'
 
 export default defineNuxtPlugin(async () => {
-  const monaco = await useMonaco()
+  const monaco: typeof import('monaco-editor') = await useMonaco()
 
-  monaco.languages.json.jsonDefaults.setDiagnosticsOptions({
+  monaco.json.jsonDefaults.setDiagnosticsOptions({
     allowComments: true,
     enableSchemaRequest: true,
     trailingCommas: 'ignore',
@@ -15,19 +15,19 @@ export default defineNuxtPlugin(async () => {
     ],
   })
 
-  monaco.languages.typescript.typescriptDefaults.setCompilerOptions({
-    target: monaco.languages.typescript.ScriptTarget.ESNext,
-    module: monaco.languages.typescript.ModuleKind.ESNext,
+  monaco.typescript.typescriptDefaults.setCompilerOptions({
+    target: monaco.typescript.ScriptTarget.ESNext,
+    module: monaco.typescript.ModuleKind.ESNext,
     allowNonTsExtensions: true,
     allowImportingTsExtensions: true,
-    moduleResolution: monaco.languages.typescript.ModuleResolutionKind.NodeJs,
+    moduleResolution: monaco.typescript.ModuleResolutionKind.NodeJs,
     noEmit: true,
     esModuleInterop: true,
-    jsx: monaco.languages.typescript.JsxEmit.Preserve,
+    jsx: monaco.typescript.JsxEmit.Preserve,
     resolveJsonModule: true,
   })
-  monaco.languages.typescript.typescriptDefaults.setEagerModelSync(true)
-  monaco.languages.typescript.typescriptDefaults.setExtraLibs([
+  monaco.typescript.typescriptDefaults.setEagerModelSync(true)
+  monaco.typescript.typescriptDefaults.setExtraLibs([
     {
       content: `declare global {
         interface ImportMeta { input: string }

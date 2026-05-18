@@ -1,7 +1,7 @@
 import type { BuiltInParserName, Plugin } from 'prettier'
 
 export default defineNuxtPlugin(async () => {
-  const monaco = await useMonaco()
+  const monaco: typeof import('monaco-editor') = await useMonaco()
 
   monaco.languages.registerDocumentFormattingEditProvider(
     (

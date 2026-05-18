@@ -47,7 +47,7 @@ export function generateModuleGraphMermaid(modules: ModuleNode[]): string {
   }
 
   // If no edges exist, add a note
-  if (modules.length === 1 && modules[0].imports.length === 0) {
+  if (modules.length === 1 && modules[0]!.imports.length === 0) {
     lines.push(
       `  note@{ shape: notch-rect, label: "Single module, no imports" }`,
       `  style note fill:#f3f4f6,stroke:#d1d5db`,
