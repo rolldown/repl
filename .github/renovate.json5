@@ -1,0 +1,5 @@
+{
+  extends: ['github>sxzz/renovate-config'],
+  rangeStrategy: 'bump',
+  automerge: true,
+}

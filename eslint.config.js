@@ -2,6 +2,6 @@ import { sxzz } from '@sxzz/eslint-config'
 
 export default sxzz({
   baseline: {
-    ignoreFeatures: ['escape-unescape'],
+    ignoreFeatures: ['escape-unescape', 'top-level-await'],
   },
 })

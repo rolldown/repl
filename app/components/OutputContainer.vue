@@ -11,6 +11,8 @@ import {
 import { npmVfsFiles, userDependencies } from '~/state/npm'
 import { bundlerError, bundlerOutput, bundlerStatus } from '~/state/output'
 
+const runtimeConfig = useRuntimeConfig()
+
 const { data: rolldownVersions } = await useRolldownVersions()
 
 const loadingPhase = ref<'loading' | 'bundling' | null>(null)
@@ -28,7 +30,7 @@ const { data, status, error, refresh } = useAsyncData(
     loadingPhase.value = 'loading'
 
     const [core, experimental, plugins, binding] = await Promise.all(
-      import.meta.env.VITE_USE_LOCAL_ROLLDOWN
+      runtimeConfig.public.useLocalRolldown
         ? [
             import('@rolldown/browser'),
             import('@rolldown/browser/experimental'),

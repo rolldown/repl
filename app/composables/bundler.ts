@@ -2,6 +2,7 @@ import type {
   InputOptions,
   OutputChunk,
   OutputOptions,
+  Plugin,
 } from '@rolldown/browser'
 
 export interface ModuleNode {
@@ -51,7 +52,7 @@ export async function build(
     }
   >()
 
-  const moduleGraphPlugin = {
+  const moduleGraphPlugin: Plugin = {
     name: 'collect-module-graph',
     buildEnd() {
       // Collect all module info during buildEnd hook

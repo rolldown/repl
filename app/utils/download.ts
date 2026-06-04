@@ -16,8 +16,8 @@ export function downloadProject() {
     private: true,
     type: 'module',
     scripts: {
-      build: 'rolldown',
-      dev: 'rolldown --watch',
+      build: 'rolldown -c',
+      dev: 'rolldown -c --watch',
     },
     dependencies: {
       rolldown: currentVersion.value.startsWith('git@')

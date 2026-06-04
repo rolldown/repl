@@ -6,8 +6,6 @@ const crossOriginHeaders = {
   'Cross-Origin-Opener-Policy': 'same-origin',
 }
 
-process.env.VITE_USE_LOCAL_ROLLDOWN = '' // set to `1` to use local rolldown build for development
-
 export default defineNuxtConfig({
   modules: [
     '@unocss/nuxt',
@@ -40,9 +38,6 @@ export default defineNuxtConfig({
     server: {
       headers: crossOriginHeaders,
     },
-    experimental: {
-      enableNativePlugin: 'resolver',
-    },
   },
   nitro: {
     routeRules: {
@@ -72,6 +67,12 @@ export default defineNuxtConfig({
           href: 'https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap',
         },
       ],
+    },
+  },
+  runtimeConfig: {
+    public: {
+      // set to `true` to use local rolldown build for development
+      useLocalRolldown: !!process.env.VITE_USE_LOCAL_ROLLDOWN,
     },
   },
   css: [
