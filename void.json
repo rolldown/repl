@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/void/schema.json",
   "inference": {
-    "build": "nuxt build --preset cloudflare-module"
+    "build": "NITRO_PRESET=cloudflare-module nuxt build"
   },
   "routing": {
     "headers": {
