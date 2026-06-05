@@ -12,7 +12,6 @@
     "typecheck": "nuxt typecheck",
     "lint": "eslint --cache .",
     "lint:fix": "pnpm run lint --fix",
-    "void": "void",
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
