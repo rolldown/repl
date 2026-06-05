@@ -27,3 +27,7 @@ logs
 
 # Local Netlify folder
 .netlify
+
+# Void
+.void
+.wrangler

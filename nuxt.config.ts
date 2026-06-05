@@ -46,7 +46,14 @@ export default defineNuxtConfig({
       },
     },
   },
-  compatibilityDate: '2024-04-03',
+  // Cloudflare/Void build: >= 2024-09-19 makes Nitro emit its modern
+  // static-assets worker (env.ASSETS). Below that it falls back to the legacy
+  // Workers Sites worker (__STATIC_CONTENT_MANIFEST), which Void can't run.
+  // Netlify stays at 2024-04-03 so it keeps using functions v1 (v2 is gated at
+  // 2024-05-07), leaving the existing Netlify deploy untouched.
+  compatibilityDate: process.env.NITRO_PRESET?.includes('cloudflare')
+    ? '2024-09-19'
+    : '2024-04-03',
   devtools: {
     enabled: false,
   },
