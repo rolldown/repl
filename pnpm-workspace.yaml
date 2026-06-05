@@ -1,5 +1,6 @@
 overrides:
   vite: ^8.0.13
+  esbuild: latest
 
 patchedDependencies:
   nuxt-monaco-editor: patches/nuxt-monaco-editor.patch
@@ -7,7 +8,10 @@ patchedDependencies:
 allowBuilds:
   '@parcel/watcher': false
   '@rolldown/browser': false
+  better-sqlite3: true
   esbuild: false
+  sharp: true
+  workerd: true
 
 minimumReleaseAgeExclude:
   - '@nuxt/kit@4.4.6'

@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/void/schema.json",
+  "inference": {
+    "build": "nuxt build --preset cloudflare-module"
+  },
+  "routing": {
+    "headers": {
+      "/*": [
+        "Cross-Origin-Embedder-Policy: require-corp",
+        "Cross-Origin-Opener-Policy: same-origin"
+      ]
+    }
+  },
+  "worker": {
+    "compatibility_date": "2026-02-24",
+    "compatibility_flags": ["nodejs_compat", "nodejs_als"]
+  }
+}
