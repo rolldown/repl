@@ -28,7 +28,10 @@ export function downloadProject() {
 
   if (!hasConfigFile) {
     projectFiles['rolldown.config.js'] = strToU8(
-      configTemplate.replaceAll('import.meta.input', JSON.stringify(entries.value)),
+      configTemplate.replaceAll(
+        'import.meta.input',
+        JSON.stringify(entries.value),
+      ),
     )
   }
 
