@@ -1,12 +1,26 @@
 import { strToU8, zip } from 'fflate'
-import { currentVersion, files } from '~/state/bundler'
+import { CONFIG_FILES, currentVersion, entries, files } from '~/state/bundler'
+
+function resolveDownloadedCode(filename: string, code: string) {
+  if (!CONFIG_FILES.includes(filename) || !code.includes('import.meta.input')) {
+    return code
+  }
+
+  const downloadEntries = JSON.stringify(
+    entries.value.map((entry) => (entry.startsWith('.') ? entry : `./${entry}`)),
+  )
+
+  return `import.meta.input = ${downloadEntries}\n\n${code}`
+}
 
 export function downloadProject() {
   const projectFiles: Record<string, Uint8Array> = {}
 
   // Add all source files from the REPL
   for (const [filename, sourceFile] of files.value) {
-    projectFiles[filename] = strToU8(sourceFile.code)
+    projectFiles[filename] = strToU8(
+      resolveDownloadedCode(filename, sourceFile.code),
+    )
   }
 
   // Generate package.json with rolldown dependency
