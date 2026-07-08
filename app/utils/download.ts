@@ -1,12 +1,35 @@
 import { strToU8, zip } from 'fflate'
-import { currentVersion, files } from '~/state/bundler'
+import {
+  CONFIG_FILES,
+  configTemplate,
+  currentVersion,
+  entries,
+  files,
+} from '~/state/bundler'
 
 export function downloadProject() {
   const projectFiles: Record<string, Uint8Array> = {}
+  let hasConfigFile = false
 
   // Add all source files from the REPL
   for (const [filename, sourceFile] of files.value) {
+    if (CONFIG_FILES.includes(filename)) {
+      hasConfigFile = true
+      projectFiles[filename] = strToU8(
+        sourceFile.code.replaceAll(
+          'import.meta.input',
+          JSON.stringify(entries.value),
+        ),
+      )
+      continue
+    }
     projectFiles[filename] = strToU8(sourceFile.code)
+  }
+
+  if (!hasConfigFile) {
+    projectFiles['rolldown.config.js'] = strToU8(
+      configTemplate.replaceAll('import.meta.input', JSON.stringify(entries.value)),
+    )
   }
 
   // Generate package.json with rolldown dependency
