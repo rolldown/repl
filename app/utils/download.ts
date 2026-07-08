@@ -7,7 +7,9 @@ function resolveDownloadedCode(filename: string, code: string) {
   }
 
   const downloadEntries = JSON.stringify(
-    entries.value.map((entry) => (entry.startsWith('.') ? entry : `./${entry}`)),
+    entries.value.map((entry) =>
+      entry.startsWith('.') ? entry : `./${entry}`,
+    ),
   )
 
   return `import.meta.input = ${downloadEntries}\n\n${code}`
