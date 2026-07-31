@@ -1,3 +1,28 @@
+// Bare specifiers that show up in `@rolldown/browser`'s published files. The
+// browser cannot resolve them, so each one is pointed at its jsdelivr ESM build.
+//
+// Keep these unversioned. `@napi-rs/wasm-runtime`'s jsdelivr build resolves its
+// own `@emnapi/*` peers to the latest 1.x, and pairing an emnapi 2.x runtime
+// with a 1.x core breaks wasm instantiation.
+const CDN_MODULES = new Set([
+  '@napi-rs/wasm-runtime',
+  '@napi-rs/wasm-runtime/fs',
+  '@emnapi/core',
+  '@emnapi/runtime',
+  'ansis',
+  'pathe',
+])
+
+function rewriteBareImports(code: string): string {
+  return code.replaceAll(
+    /\bfrom\s*(['"])([^'"]+)\1/g,
+    (match, quote: string, specifier: string) =>
+      CDN_MODULES.has(specifier)
+        ? `from ${quote}https://cdn.jsdelivr.net/npm/${specifier}/+esm${quote}`
+        : match,
+  )
+}
+
 export default eventHandler(async (evt) => {
   let path = getRouterParam(evt, 'path')!
   const isGit = path.startsWith('@git')
@@ -37,16 +62,7 @@ export default eventHandler(async (evt) => {
 
   let body: ReadableStream<Uint8Array> | null | string = response.body
   if (allowMine) {
-    body = await response.text()
-    body = body
-      .replaceAll(
-        `from '@napi-rs/wasm-runtime'`,
-        `from 'https://cdn.jsdelivr.net/npm/@napi-rs/wasm-runtime/+esm'`,
-      )
-      .replaceAll(
-        `from '@napi-rs/wasm-runtime/fs'`,
-        `from 'https://cdn.jsdelivr.net/npm/@napi-rs/wasm-runtime/fs/+esm'`,
-      )
+    body = rewriteBareImports(await response.text())
       .replaceAll(
         `import __wasmUrl from './rolldown-binding.wasm32-wasi.wasm?url'`,
         `const __wasmUrl = ${JSON.stringify(new URL('rolldown-binding.wasm32-wasi.wasm', url).href)}`,
@@ -54,14 +70,6 @@ export default eventHandler(async (evt) => {
       .replaceAll(
         `const __wasmUrl = new URL('./rolldown-binding.wasm32-wasi.wasm', ${'import.meta'}.url).href`,
         `const __wasmUrl = ${JSON.stringify(new URL('rolldown-binding.wasm32-wasi.wasm', url).href)}`,
-      )
-      .replaceAll(
-        `from "pathe"`,
-        `from "https://cdn.jsdelivr.net/npm/pathe/+esm"`,
-      )
-      .replaceAll(
-        `from "ansis"`,
-        `from "https://cdn.jsdelivr.net/npm/ansis/+esm"`,
       )
   }
   const newResponse = new Response(body, {
