@@ -113,10 +113,22 @@ export default eventHandler(async (evt) => {
     contentType?.includes('application/javascript') ||
     contentType?.includes('text/javascript') ||
     contentType?.includes('application/node') ||
-    contentType?.includes('application/json')
+    contentType?.includes('application/json') ||
+    contentType?.includes('application/wasm')
   if (!allowMine) {
     return new Response(`Unsupported content type: ${contentType}`, {
       status: 400,
+    })
+  }
+
+  // don't rewrite binary files
+  if (contentType?.includes('application/wasm')) {
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: {
+        'content-type': contentType!,
+      },
     })
   }
 
