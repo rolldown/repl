@@ -123,13 +123,7 @@ export default eventHandler(async (evt) => {
 
   // don't rewrite binary files
   if (contentType?.includes('application/wasm')) {
-    return new Response(response.body, {
-      status: response.status,
-      statusText: response.statusText,
-      headers: {
-        'content-type': contentType!,
-      },
-    })
+    return Response.redirect(url)
   }
 
   const wasmUrl = JSON.stringify(
