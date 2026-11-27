@@ -31,3 +31,5 @@ logs
 # Void
 .void
 .wrangler
+.void-wrangler.jsonc
+.cloudflare

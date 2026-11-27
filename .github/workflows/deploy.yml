@@ -26,6 +26,9 @@ jobs:
           node-version: '24'
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - run: pnpm exec void deploy
+      - run: |
+          pnpm exec void connect "$VOID_API_URL" --no-login
+          pnpm exec void deploy --platform void --project "$VOID_PROJECT"
         env:
+          VOID_API_URL: https://api.void.cloud
           VOID_PROJECT: rolldown-repl
